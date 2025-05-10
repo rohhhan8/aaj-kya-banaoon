@@ -15,16 +15,37 @@ import { useAuth } from "@/lib/authContext";
 
 const ModernHome = () => {
   const { day, timeOfDay } = useCurrentDateTime();
+  const { user } = useAuth();
   const [mode, setMode] = useState<"daily" | "special">("daily");
   const [showTiffin, setShowTiffin] = useState(false);
   const [activeFilters, setActiveFilters] = useState<DishTag[]>([]);
   const [selectedOccasion, setSelectedOccasion] = useState<string | undefined>();
   const [familySize, setFamilySize] = useState<number>(4);
+  const [authPromptOpen, setAuthPromptOpen] = useState(false);
+  const [authPromptReason, setAuthPromptReason] = useState<'filter' | 'tiffin' | 'favorite' | 'occasion'>('filter');
+  
+  // Check if user has already seen the prompt and chosen to continue as guest
+  const hasGuestAccess = typeof window !== 'undefined' && localStorage.getItem('guestAccess') === 'true';
   
   // Get context based on day and time
   const { contextTitle, contextDescription } = getDayAndMealContext(day, timeOfDay);
   
+  const showAuthPromptIfNeeded = (reason: 'filter' | 'tiffin' | 'favorite' | 'occasion') => {
+    // If user is authenticated or has already chosen to continue as guest, don't show prompt
+    if (user || hasGuestAccess) return false;
+    
+    setAuthPromptReason(reason);
+    setAuthPromptOpen(true);
+    return true;
+  };
+  
   const handleModeChange = (newMode: "daily" | "special") => {
+    // If switching to special mode, prompt for auth
+    if (newMode === "special" && !user && !hasGuestAccess) {
+      showAuthPromptIfNeeded('occasion');
+      return;
+    }
+    
     setMode(newMode);
     if (newMode === "daily") {
       setSelectedOccasion(undefined);
@@ -32,19 +53,41 @@ const ModernHome = () => {
   };
   
   const handleTiffinToggle = (tiffinEnabled: boolean) => {
+    // First interaction point - prompt for auth
+    if (tiffinEnabled && !showTiffin && !user && !hasGuestAccess) {
+      showAuthPromptIfNeeded('tiffin');
+      return;
+    }
+    
     setShowTiffin(tiffinEnabled);
   };
   
   const handleFilterChange = (filters: DishTag[]) => {
+    // If adding filters and not already authenticated, prompt
+    if (filters.length > 0 && activeFilters.length === 0 && !user && !hasGuestAccess) {
+      showAuthPromptIfNeeded('filter');
+      return;
+    }
+    
     setActiveFilters(filters);
   };
   
   const handleOccasionSelect = (occasion: string) => {
+    // Occasion selection requires auth
+    if (!user && !hasGuestAccess) {
+      showAuthPromptIfNeeded('occasion');
+      return;
+    }
+    
     setSelectedOccasion(occasion);
   };
 
   const handleFamilySizeChange = (size: number) => {
     setFamilySize(size);
+  };
+  
+  const handleCloseAuthPrompt = () => {
+    setAuthPromptOpen(false);
   };
 
   return (
@@ -94,6 +137,13 @@ const ModernHome = () => {
         </div>
         
         <ModernFooter />
+
+        {/* Auth prompt dialog */}
+        <AuthPrompt 
+          isOpen={authPromptOpen}
+          onClose={handleCloseAuthPrompt}
+          reason={authPromptReason}
+        />
       </motion.div>
   );
 };

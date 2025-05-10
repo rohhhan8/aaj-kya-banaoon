@@ -1,8 +1,10 @@
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { DishTag } from "@/lib/utils";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/lib/authContext";
 
 interface ModernSuggestionCardProps {
   id: string;
@@ -12,6 +14,7 @@ interface ModernSuggestionCardProps {
   tags: DishTag[];
   index: number;
   onSeeMore: () => void;
+  onAuthPrompt?: (reason: 'favorite') => void;
 }
 
 const ModernSuggestionCard = ({ 
@@ -21,8 +24,27 @@ const ModernSuggestionCard = ({
   imageUrl, 
   tags, 
   index, 
-  onSeeMore 
+  onSeeMore,
+  onAuthPrompt 
 }: ModernSuggestionCardProps) => {
+  const { user } = useAuth();
+  const [isSaved, setIsSaved] = useState(false);
+  
+  const handleSaveRecipe = () => {
+    // If not authenticated, prompt for auth
+    if (!user && onAuthPrompt) {
+      onAuthPrompt('favorite');
+      return;
+    }
+    
+    // Toggle saved state
+    setIsSaved(!isSaved);
+    
+    // In a real app, this would call an API to save the recipe to the user's favorites
+    if (user) {
+      console.log(`Recipe ${isSaved ? 'removed from' : 'saved to'} favorites:`, id);
+    }
+  };
   
   // Map tag to its corresponding icon
   const getTagIcon = (tag: DishTag): string => {
@@ -83,14 +105,23 @@ const ModernSuggestionCard = ({
           <p className="text-sm text-spice-brown dark:text-slate-300 font-nunito line-clamp-3">{description}</p>
         </CardContent>
         
-        <CardFooter className="p-5 pt-0">
+        <CardFooter className="p-5 pt-0 flex justify-between">
           <Button 
             variant="ghost" 
-            className="p-0 hover:bg-transparent text-saffron dark:text-marigold hover:text-deep-saffron dark:hover:text-deep-saffron font-medium flex items-center w-full justify-start"
+            className="p-0 hover:bg-transparent text-saffron dark:text-marigold hover:text-deep-saffron dark:hover:text-deep-saffron font-medium flex items-center justify-start"
             onClick={onSeeMore}
           >
             <span>See similar dishes</span>
             <i className="fas fa-arrow-right ml-2 text-xs"></i>
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            className="p-0 hover:bg-transparent"
+            onClick={handleSaveRecipe}
+          >
+            <i className={`${isSaved ? 'fas' : 'far'} fa-heart text-xl ${isSaved ? 'text-rose-500' : 'text-gray-400 hover:text-rose-400'}`}></i>
           </Button>
         </CardFooter>
       </Card>

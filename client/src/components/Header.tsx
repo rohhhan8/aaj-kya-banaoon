@@ -52,26 +52,26 @@ const Header = () => {
           
           <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 mt-8">
             <motion.div 
-              className="flex items-center justify-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 text-charcoal dark:text-white"
+              className="flex items-center justify-center space-x-2 bg-white/30 dark:bg-slate-700/50 backdrop-blur-sm rounded-full px-6 py-3 text-charcoal dark:text-white shadow-sm"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <i className="fas fa-calendar-day text-mint-green dark:text-teal-400"></i>
+              <i className="fas fa-calendar-day text-saffron dark:text-teal-400"></i>
               <span className="font-quicksand font-medium">{day}</span>
             </motion.div>
             
             <motion.div 
-              className="flex items-center justify-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 text-charcoal dark:text-white"
+              className="flex items-center justify-center space-x-2 bg-white/30 dark:bg-slate-700/50 backdrop-blur-sm rounded-full px-6 py-3 text-charcoal dark:text-white shadow-sm"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.7 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <i className="fas fa-clock text-mint-green dark:text-teal-400"></i>
+              <i className="fas fa-clock text-saffron dark:text-teal-400"></i>
               <span className="font-quicksand font-medium">{timeOfDay}</span>
             </motion.div>
           </div>

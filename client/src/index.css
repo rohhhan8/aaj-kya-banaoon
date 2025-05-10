@@ -25,13 +25,41 @@
   --radius: 0.5rem;
   
   /* Custom theme colors */
-  --warm-orange: 39 100% 50%;
-  --tomato-red: 9 75% 55%;
-  --mint-green: 120 26% 75%;
+  --saffron: 35 100% 50%;
+  --deep-saffron: 15 100% 55%;
+  --haldi: 43 100% 50%;
+  --turmeric: 35 92% 46%;
+  --mint-green: 142 72% 29%;
+  --cardamom: 140 40% 40%;
   --cream: 43 100% 96%;
   --off-white: 40 33% 96%;
-  --charcoal: 0 0% 23%;
+  --charcoal: 0 0% 15%;
   --spice-brown: 25 72% 31%;
+  --sandalwood: 34 43% 75%;
+  --marigold: 36 100% 55%;
+}
+
+.dark {
+  --background: 222 47% 11%;
+  --foreground: 210 40% 98%;
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 40% 98%;
+  --card: 222 47% 11%;
+  --card-foreground: 210 40% 98%;
+  --border: 217 33% 20%;
+  --input: 217 33% 20%;
+  --primary: 36 100% 55%;
+  --primary-foreground: 222 47% 11%;
+  --secondary: 217 33% 17%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 35 100% 50%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 24 71% 50%;
+  --radius: 0.5rem;
 }
 
 @layer base {
@@ -61,16 +89,29 @@
     font-family: 'Quicksand', sans-serif;
   }
   
-  .bg-warm-orange {
-    background-color: hsl(var(--warm-orange));
+  /* Background colors */
+  .bg-saffron {
+    background-color: hsl(var(--saffron));
   }
   
-  .bg-tomato-red {
-    background-color: hsl(var(--tomato-red));
+  .bg-deep-saffron {
+    background-color: hsl(var(--deep-saffron));
+  }
+  
+  .bg-haldi {
+    background-color: hsl(var(--haldi));
+  }
+  
+  .bg-turmeric {
+    background-color: hsl(var(--turmeric));
   }
   
   .bg-mint-green {
     background-color: hsl(var(--mint-green));
+  }
+  
+  .bg-cardamom {
+    background-color: hsl(var(--cardamom));
   }
   
   .bg-cream {
@@ -89,16 +130,37 @@
     background-color: hsl(var(--spice-brown));
   }
   
-  .text-warm-orange {
-    color: hsl(var(--warm-orange));
+  .bg-sandalwood {
+    background-color: hsl(var(--sandalwood));
   }
   
-  .text-tomato-red {
-    color: hsl(var(--tomato-red));
+  .bg-marigold {
+    background-color: hsl(var(--marigold));
+  }
+  
+  /* Text colors */
+  .text-saffron {
+    color: hsl(var(--saffron));
+  }
+  
+  .text-deep-saffron {
+    color: hsl(var(--deep-saffron));
+  }
+  
+  .text-haldi {
+    color: hsl(var(--haldi));
+  }
+  
+  .text-turmeric {
+    color: hsl(var(--turmeric));
   }
   
   .text-mint-green {
     color: hsl(var(--mint-green));
+  }
+  
+  .text-cardamom {
+    color: hsl(var(--cardamom));
   }
   
   .text-cream {
@@ -117,12 +179,25 @@
     color: hsl(var(--spice-brown));
   }
   
-  .border-warm-orange {
-    border-color: hsl(var(--warm-orange));
+  .text-sandalwood {
+    color: hsl(var(--sandalwood));
   }
   
-  .border-tomato-red {
-    border-color: hsl(var(--tomato-red));
+  .text-marigold {
+    color: hsl(var(--marigold));
+  }
+  
+  /* Border colors */
+  .border-saffron {
+    border-color: hsl(var(--saffron));
+  }
+  
+  .border-deep-saffron {
+    border-color: hsl(var(--deep-saffron));
+  }
+  
+  .border-haldi {
+    border-color: hsl(var(--haldi));
   }
 }
 
@@ -154,6 +229,81 @@
   to { 
     transform: translateX(0); 
     opacity: 1; 
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.5s ease-in-out;
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(20px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+.scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+@keyframes scaleIn {
+  from { 
+    transform: scale(0.95);
+    opacity: 0; 
+  }
+  to { 
+    transform: scale(1);
+    opacity: 1; 
+  }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
   }
 }
 

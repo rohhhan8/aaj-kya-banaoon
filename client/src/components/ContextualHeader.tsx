@@ -20,7 +20,14 @@ const ContextualHeader = ({ mode, dailyContext, specialContext }: ContextualHead
   const occasions = [
     { id: "family", name: "Family Gathering", icon: "fas fa-users" },
     { id: "puja", name: "Puja Ceremony", icon: "fas fa-praying-hands" },
-    { id: "diwali", name: "Diwali", icon: "fas fa-moon" },
+    { id: "diwali", name: "Diwali", icon: "fas fa-diya" },
+    { id: "holi", name: "Holi", icon: "fas fa-paint-brush" },
+    { id: "navratri", name: "Navratri", icon: "fas fa-om" },
+    { id: "eid", name: "Eid", icon: "fas fa-star-and-crescent" },
+    { id: "raksha", name: "Raksha Bandhan", icon: "fas fa-hand-holding" },
+    { id: "ganesh", name: "Ganesh Chaturthi", icon: "fas fa-om" },
+    { id: "onam", name: "Onam", icon: "fas fa-leaf" },
+    { id: "lohri", name: "Lohri", icon: "fas fa-fire" },
     { id: "party", name: "Party", icon: "fas fa-glass-cheers" },
   ];
 

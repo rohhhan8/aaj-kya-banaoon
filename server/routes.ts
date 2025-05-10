@@ -15,7 +15,8 @@ const timeOfDaySchema = z.enum([
 const tagsSchema = z.array(z.string()).optional();
 
 const occasionSchema = z.enum([
-  "Family Gathering", "Puja Ceremony", "Diwali", "Party"
+  "Family Gathering", "Puja Ceremony", "Diwali", "Holi", "Navratri", 
+  "Eid", "Raksha Bandhan", "Ganesh Chaturthi", "Onam", "Lohri", "Party"
 ]);
 
 export async function registerRoutes(app: Express): Promise<Server> {

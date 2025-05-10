@@ -126,6 +126,8 @@ const ModernHome = () => {
           
           <ModernContextualHeader 
             mode={mode}
+            day={day}
+            timeOfDay={timeOfDay}
             dailyContext={{
               title: contextTitle,
               description: contextDescription

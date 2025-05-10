@@ -30,6 +30,7 @@ const ModernModeToggle = ({
   const [activeMode, setActiveMode] = useState<"daily" | "special">("daily");
   const [tiffinEnabled, setTiffinEnabled] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string>("auto");
+  const [vegOnly, setVegOnly] = useState(false);
 
   const handleModeChange = (value: string) => {
     const newMode = value as "daily" | "special";
@@ -48,6 +49,11 @@ const ModernModeToggle = ({
       onTimeChange(value);
     }
   };
+  
+  const handleVegToggle = (checked: boolean) => {
+    setVegOnly(checked);
+    // We would implement passing this to a parent component if needed
+  };
 
   return (
     <motion.div 
@@ -57,76 +63,117 @@ const ModernModeToggle = ({
       transition={{ duration: 0.4 }}
     >
       <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div>
-            <Tabs 
-              defaultValue="daily" 
-              value={activeMode}
-              onValueChange={handleModeChange}
-              className="w-full md:w-auto"
-            >
-              <TabsList className="w-full grid grid-cols-2">
-                <TabsTrigger value="daily" className="font-quicksand">
-                  <motion.div 
-                    className="flex items-center gap-2" 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <i className="fas fa-clock text-saffron dark:text-marigold"></i>
-                    <span>Daily Routine</span>
-                  </motion.div>
-                </TabsTrigger>
-                <TabsTrigger value="special" className="font-quicksand">
-                  <motion.div 
-                    className="flex items-center gap-2"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <i className="fas fa-star text-saffron dark:text-marigold"></i>
-                    <span>Special Occasion</span>
-                  </motion.div>
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+        {/* Main mode toggle */}
+        <div className="mb-5">
+          <Tabs 
+            defaultValue="daily" 
+            value={activeMode}
+            onValueChange={handleModeChange}
+            className="w-full"
+          >
+            <TabsList className="w-full grid grid-cols-2">
+              <TabsTrigger value="daily" className="font-quicksand">
+                <motion.div 
+                  className="flex items-center gap-2 justify-center" 
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <i className="fas fa-clock text-saffron dark:text-marigold"></i>
+                  <span>Daily Routine</span>
+                </motion.div>
+              </TabsTrigger>
+              <TabsTrigger value="special" className="font-quicksand">
+                <motion.div 
+                  className="flex items-center gap-2 justify-center"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <i className="fas fa-star text-saffron dark:text-marigold"></i>
+                  <span>Special Occasion</span>
+                </motion.div>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        
+        {/* Toggle options in a uniform grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Time of Day Selection */}
+          <div className="bg-white/50 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
+            <div className="mb-1 text-xs text-charcoal/70 dark:text-white/70 font-medium">Time of Day</div>
+            <Select value={selectedTime} onValueChange={handleTimeChange}>
+              <SelectTrigger className="w-full border-none bg-transparent shadow-none font-quicksand">
+                <div className="flex items-center gap-2">
+                  <i className="fas fa-sun text-saffron dark:text-marigold"></i>
+                  <SelectValue placeholder="Auto Detect" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="auto">Auto Detect</SelectItem>
+                <SelectItem value="Morning">Morning</SelectItem>
+                <SelectItem value="Afternoon">Afternoon</SelectItem>
+                <SelectItem value="Evening">Evening</SelectItem>
+                <SelectItem value="Night">Night</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Tiffin Toggle */}
-            <div className="flex items-center space-x-2">
+          {/* Family Size Selection - Compact version */}
+          <div className="bg-white/50 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
+            <div className="mb-1 text-xs text-charcoal/70 dark:text-white/70 font-medium">Family Size</div>
+            <div className="flex items-center justify-between">
+              <button 
+                onClick={() => familySize > 1 && onFamilySizeChange(familySize - 1)}
+                className="h-8 w-8 rounded-full bg-white dark:bg-slate-600 flex items-center justify-center text-charcoal dark:text-white"
+              >
+                <i className="fas fa-minus text-xs"></i>
+              </button>
+              
+              <div className="flex items-center gap-2">
+                <i className="fas fa-user-friends text-saffron dark:text-marigold"></i>
+                <span className="font-quicksand font-medium text-lg">{familySize}</span>
+                <span className="text-xs text-charcoal/70 dark:text-white/70">{familySize === 1 ? 'person' : 'people'}</span>
+              </div>
+              
+              <button 
+                onClick={() => familySize < 10 && onFamilySizeChange(familySize + 1)}
+                className="h-8 w-8 rounded-full bg-white dark:bg-slate-600 flex items-center justify-center text-charcoal dark:text-white"
+              >
+                <i className="fas fa-plus text-xs"></i>
+              </button>
+            </div>
+          </div>
+          
+          {/* Lunch Tiffin Toggle */}
+          <div className="bg-white/50 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
+            <div className="mb-1 text-xs text-charcoal/70 dark:text-white/70 font-medium">Lunch Options</div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <i className="fas fa-utensils text-saffron dark:text-marigold"></i>
+                <span className="font-quicksand font-medium">Lunch Tiffin</span>
+              </div>
               <Switch 
                 id="lunch-tiffin" 
                 checked={tiffinEnabled}
                 onCheckedChange={handleTiffinToggle}
               />
-              <Label htmlFor="lunch-tiffin" className="font-quicksand text-charcoal dark:text-white">
-                <div className="flex items-center gap-2">
-                  <i className="fas fa-utensils text-sm text-saffron dark:text-marigold"></i>
-                  <span>Lunch Tiffin</span>
-                </div>
-              </Label>
             </div>
-            
-            {/* Time of Day Selection */}
-            <div className="flex items-center space-x-2">
-              <Select value={selectedTime} onValueChange={handleTimeChange}>
-                <SelectTrigger className="w-[140px] font-quicksand">
-                  <SelectValue placeholder="Time of Day" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="auto">Auto Detect</SelectItem>
-                  <SelectItem value="Morning">Morning</SelectItem>
-                  <SelectItem value="Afternoon">Afternoon</SelectItem>
-                  <SelectItem value="Evening">Evening</SelectItem>
-                  <SelectItem value="Night">Night</SelectItem>
-                </SelectContent>
-              </Select>
+          </div>
+          
+          {/* Veg/Non-Veg Toggle */}
+          <div className="bg-white/50 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
+            <div className="mb-1 text-xs text-charcoal/70 dark:text-white/70 font-medium">Diet Preference</div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <i className="fas fa-leaf text-green-500 dark:text-green-400"></i>
+                <span className="font-quicksand font-medium">Vegetarian Only</span>
+              </div>
+              <Switch 
+                id="veg-only" 
+                checked={vegOnly}
+                onCheckedChange={handleVegToggle}
+              />
             </div>
-            
-            {/* Family Size Selector */}
-            <FamilySizeSelector
-              familySize={familySize}
-              onChange={onFamilySizeChange}
-            />
           </div>
         </div>
       </div>

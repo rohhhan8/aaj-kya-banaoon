@@ -23,9 +23,11 @@ interface ModernContextualHeaderProps {
   mode: "daily" | "special";
   dailyContext: DailyContextProps;
   specialContext: SpecialContextProps;
+  day: string;
+  timeOfDay: string;
 }
 
-const ModernContextualHeader = ({ mode, dailyContext, specialContext }: ModernContextualHeaderProps) => {
+const ModernContextualHeader = ({ mode, dailyContext, specialContext, day, timeOfDay }: ModernContextualHeaderProps) => {
   const [upcomingFestival, setUpcomingFestival] = useState<Festival | undefined>();
   const [todayFestival, setTodayFestival] = useState<Festival | undefined>();
   
@@ -109,6 +111,29 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext }: ModernCo
           >
             <Card className="bg-white dark:bg-slate-800 shadow-lg border-none">
               <CardContent className="p-6">
+                {/* Greeting header section */}
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <i className="fas fa-calendar-day text-lg text-saffron dark:text-marigold"></i>
+                    <span className="text-sm font-medium text-charcoal/70 dark:text-white/70">{day}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <i className={`fas ${
+                      timeOfDay === 'Morning' ? 'fa-sun' : 
+                      timeOfDay === 'Afternoon' ? 'fa-sun' : 
+                      timeOfDay === 'Evening' ? 'fa-moon' : 'fa-moon'
+                    } text-lg text-saffron dark:text-marigold`}></i>
+                    <span className="text-sm font-medium text-charcoal/70 dark:text-white/70">{timeOfDay}</span>
+                  </div>
+                </div>
+                
+                <div className="text-lg font-medium text-charcoal/80 dark:text-white/80 mb-5 font-quicksand">
+                  {timeOfDay === "Morning" && "Good morning! Start your day with these delicious options."}
+                  {timeOfDay === "Afternoon" && "Good afternoon! Time for a satisfying midday meal."}
+                  {timeOfDay === "Evening" && "Good evening! Enjoy these dinner recommendations."}
+                  {timeOfDay === "Night" && "Still up? These light options are perfect for a late meal."}
+                </div>
+                
                 {/* Show festival context if today is a festival */}
                 {todayFestival ? (
                   <div className="space-y-4">
@@ -190,6 +215,18 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext }: ModernCo
           >
             <Card className="bg-white dark:bg-slate-800 shadow-lg border-none overflow-hidden">
               <CardContent className="p-6">
+                {/* Greeting header section - simpler for special occasions mode */}
+                <div className="mb-6 flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <i className="fas fa-calendar-day text-lg text-saffron dark:text-marigold"></i>
+                    <span className="text-sm font-medium text-charcoal/70 dark:text-white/70">{day}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <i className="fas fa-star text-lg text-saffron dark:text-marigold"></i>
+                    <span className="text-sm font-medium text-charcoal/70 dark:text-white/70">Special Occasion</span>
+                  </div>
+                </div>
+                
                 <h2 className="text-2xl font-playfair font-bold text-charcoal dark:text-white mb-6">Choose an Occasion</h2>
                 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
@@ -206,9 +243,9 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext }: ModernCo
                         variant="outline"
                         className={`w-full h-24 flex flex-col items-center justify-center gap-2 
                           ${occasion.isSpecial 
-                            ? 'bg-gradient-to-br from-cream/50 to-saffron/20 dark:from-slate-700/50 dark:to-marigold/20' 
-                            : 'bg-cream/30 dark:bg-slate-700/50'} 
-                          border-none hover:bg-saffron/20 dark:hover:bg-marigold/20`}
+                            ? 'bg-gradient-to-br from-white/70 to-saffron/20 dark:from-slate-700/70 dark:to-marigold/20' 
+                            : 'bg-white/50 dark:bg-slate-700/50'} 
+                          border-none hover:bg-saffron/20 dark:hover:bg-marigold/20 shadow-sm rounded-lg`}
                         onClick={() => specialContext.onOccasionSelect(
                           'id' in occasion && 'festival' in occasion ? occasion.id : occasion.name
                         )}

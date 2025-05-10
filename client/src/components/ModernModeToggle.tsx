@@ -65,35 +65,37 @@ const ModernModeToggle = ({
       <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6">
         {/* Main mode toggle */}
         <div className="mb-5">
-          <Tabs 
-            defaultValue="daily" 
-            value={activeMode}
-            onValueChange={handleModeChange}
-            className="w-full"
-          >
-            <TabsList className="w-full grid grid-cols-2">
-              <TabsTrigger value="daily" className="font-quicksand">
-                <motion.div 
-                  className="flex items-center gap-2 justify-center" 
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <i className="fas fa-clock text-saffron dark:text-marigold"></i>
-                  <span>Daily Routine</span>
-                </motion.div>
-              </TabsTrigger>
-              <TabsTrigger value="special" className="font-quicksand">
-                <motion.div 
-                  className="flex items-center gap-2 justify-center"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <i className="fas fa-star text-saffron dark:text-marigold"></i>
-                  <span>Special Occasion</span>
-                </motion.div>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex justify-center mb-1">
+            <div className="bg-white/50 dark:bg-slate-700/50 p-1 rounded-full shadow-sm inline-flex">
+              <motion.button
+                className={`px-5 py-2.5 rounded-full font-quicksand flex items-center gap-2 transition-all ${
+                  activeMode === 'daily' 
+                    ? 'bg-gradient-to-r from-saffron/90 to-deep-saffron/90 dark:from-teal-600 dark:to-teal-700 text-white shadow-md' 
+                    : 'text-charcoal/70 dark:text-white/70 hover:bg-white/50 dark:hover:bg-slate-600/50'
+                }`}
+                onClick={() => handleModeChange('daily')}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <i className={`fas fa-clock ${activeMode === 'daily' ? 'text-white' : 'text-saffron dark:text-marigold'}`}></i>
+                <span>Daily Routine</span>
+              </motion.button>
+              
+              <motion.button
+                className={`px-5 py-2.5 rounded-full font-quicksand flex items-center gap-2 transition-all ${
+                  activeMode === 'special' 
+                    ? 'bg-gradient-to-r from-saffron/90 to-deep-saffron/90 dark:from-teal-600 dark:to-teal-700 text-white shadow-md' 
+                    : 'text-charcoal/70 dark:text-white/70 hover:bg-white/50 dark:hover:bg-slate-600/50'
+                }`}
+                onClick={() => handleModeChange('special')}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <i className={`fas fa-star ${activeMode === 'special' ? 'text-white' : 'text-saffron dark:text-marigold'}`}></i>
+                <span>Special Occasion</span>
+              </motion.button>
+            </div>
+          </div>
         </div>
         
         {/* Toggle options in a uniform grid */}

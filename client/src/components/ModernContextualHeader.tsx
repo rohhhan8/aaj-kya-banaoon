@@ -111,27 +111,12 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext, day, timeO
           >
             <Card className="bg-white dark:bg-slate-800 shadow-lg border-none">
               <CardContent className="p-6">
-                {/* Greeting header section */}
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <i className="fas fa-calendar-day text-lg text-saffron dark:text-marigold"></i>
-                    <span className="text-sm font-medium text-charcoal/70 dark:text-white/70">{day}</span>
+                {/* Context indicator - simplified header */}
+                <div className="mb-6 flex items-center justify-end">
+                  <div className="flex items-center space-x-2 bg-white/10 dark:bg-slate-700/30 px-4 py-1.5 rounded-full">
+                    <i className="fas fa-utensils text-sm text-saffron dark:text-marigold"></i>
+                    <span className="text-sm font-medium text-charcoal/80 dark:text-white/80">Daily Menu Suggestions</span>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <i className={`fas ${
-                      timeOfDay === 'Morning' ? 'fa-sun' : 
-                      timeOfDay === 'Afternoon' ? 'fa-sun' : 
-                      timeOfDay === 'Evening' ? 'fa-moon' : 'fa-moon'
-                    } text-lg text-saffron dark:text-marigold`}></i>
-                    <span className="text-sm font-medium text-charcoal/70 dark:text-white/70">{timeOfDay}</span>
-                  </div>
-                </div>
-                
-                <div className="text-lg font-medium text-charcoal/80 dark:text-white/80 mb-5 font-quicksand">
-                  {timeOfDay === "Morning" && "Good morning! Start your day with these delicious options."}
-                  {timeOfDay === "Afternoon" && "Good afternoon! Time for a satisfying midday meal."}
-                  {timeOfDay === "Evening" && "Good evening! Enjoy these dinner recommendations."}
-                  {timeOfDay === "Night" && "Still up? These light options are perfect for a late meal."}
                 </div>
                 
                 {/* Show festival context if today is a festival */}
@@ -215,15 +200,11 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext, day, timeO
           >
             <Card className="bg-white dark:bg-slate-800 shadow-lg border-none overflow-hidden">
               <CardContent className="p-6">
-                {/* Greeting header section - simpler for special occasions mode */}
-                <div className="mb-6 flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <i className="fas fa-calendar-day text-lg text-saffron dark:text-marigold"></i>
-                    <span className="text-sm font-medium text-charcoal/70 dark:text-white/70">{day}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <i className="fas fa-star text-lg text-saffron dark:text-marigold"></i>
-                    <span className="text-sm font-medium text-charcoal/70 dark:text-white/70">Special Occasion</span>
+                {/* Context indicator for special occasions */}
+                <div className="mb-6 flex items-center justify-end">
+                  <div className="flex items-center space-x-2 bg-white/10 dark:bg-slate-700/30 px-4 py-1.5 rounded-full">
+                    <i className="fas fa-star text-sm text-saffron dark:text-marigold"></i>
+                    <span className="text-sm font-medium text-charcoal/80 dark:text-white/80">Special Occasion Meals</span>
                   </div>
                 </div>
                 

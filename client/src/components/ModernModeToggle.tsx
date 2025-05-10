@@ -3,15 +3,33 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import FamilySizeSelector from "./FamilySizeSelector";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 interface ModernModeToggleProps {
   onModeChange: (mode: "daily" | "special") => void;
   onTiffinToggle: (showTiffin: boolean) => void;
+  familySize: number;
+  onFamilySizeChange: (size: number) => void;
+  onTimeChange?: (time: string) => void;
 }
 
-const ModernModeToggle = ({ onModeChange, onTiffinToggle }: ModernModeToggleProps) => {
+const ModernModeToggle = ({ 
+  onModeChange, 
+  onTiffinToggle, 
+  familySize, 
+  onFamilySizeChange,
+  onTimeChange 
+}: ModernModeToggleProps) => {
   const [activeMode, setActiveMode] = useState<"daily" | "special">("daily");
   const [tiffinEnabled, setTiffinEnabled] = useState(false);
+  const [selectedTime, setSelectedTime] = useState<string>("auto");
 
   const handleModeChange = (value: string) => {
     const newMode = value as "daily" | "special";

@@ -1,5 +1,6 @@
 import { useAuth } from "@/lib/authContext";
 import { motion } from "framer-motion";
+import { Link } from "wouter";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -49,17 +50,17 @@ const UserProfile = () => {
         
         <DropdownMenuSeparator />
         
-        <DropdownMenuItem 
-          className="cursor-pointer" 
-          onClick={() => window.location.href="/dashboard"}>
-          Dashboard
-        </DropdownMenuItem>
+        <Link href="/dashboard">
+          <DropdownMenuItem className="cursor-pointer">
+            Dashboard
+          </DropdownMenuItem>
+        </Link>
         
-        <DropdownMenuItem 
-          className="cursor-pointer" 
-          onClick={() => window.location.href="/dashboard?tab=favorites"}>
-          Saved Recipes
-        </DropdownMenuItem>
+        <Link href="/dashboard?tab=favorites">
+          <DropdownMenuItem className="cursor-pointer">
+            Saved Recipes
+          </DropdownMenuItem>
+        </Link>
         
         <DropdownMenuSeparator />
         

@@ -2,6 +2,9 @@ import { motion } from "framer-motion";
 import useCurrentDateTime from "@/hooks/useCurrentDateTime";
 import ThemeToggle from "./ThemeToggle";
 import FamilySizeSelector from "./FamilySizeSelector";
+import LoginButton from "./LoginButton";
+import UserProfile from "./UserProfile";
+import { useAuth } from "@/lib/authContext";
 
 interface HeaderProps {
   familySize: number;
@@ -10,6 +13,7 @@ interface HeaderProps {
 
 const Header = ({ familySize, onFamilySizeChange }: HeaderProps) => {
   const { day, timeOfDay } = useCurrentDateTime();
+  const { user } = useAuth();
 
   return (
     <header className="relative bg-gradient-to-b from-haldi to-deep-saffron dark:from-slate-900 dark:to-slate-800 min-h-screen flex flex-col">
@@ -36,6 +40,7 @@ const Header = ({ familySize, onFamilySizeChange }: HeaderProps) => {
             familySize={familySize} 
             onChange={onFamilySizeChange} 
           />
+          {user ? <UserProfile /> : <LoginButton />}
           <ThemeToggle />
         </div>
       </div>

@@ -95,7 +95,7 @@ export class MemStorage implements IStorage {
     }
     
     return Array.from(this.dishes.values()).filter(
-      (dish) => tags.some(tag => dish.tags.includes(tag))
+      (dish) => dish.tags && tags.some(tag => dish.tags.includes(tag))
     );
   }
   
@@ -109,11 +109,11 @@ export class MemStorage implements IStorage {
     }
     
     const dayFiltered = Array.from(this.dishes.values()).filter(
-      (dish) => dish.dayRecommended.includes(day) || dish.dayRecommended.includes("Any")
+      (dish) => dish.dayRecommended && (dish.dayRecommended.includes(day) || dish.dayRecommended.includes("Any"))
     );
     
     const timeFiltered = dayFiltered.filter(
-      (dish) => dish.timeOfDay.includes(timeOfDay) || dish.timeOfDay.includes("Any")
+      (dish) => dish.timeOfDay && (dish.timeOfDay.includes(timeOfDay) || dish.timeOfDay.includes("Any"))
     );
     
     const mealTypeFiltered = timeFiltered.filter(
@@ -122,7 +122,7 @@ export class MemStorage implements IStorage {
     
     if (tags && tags.length > 0) {
       return mealTypeFiltered.filter(
-        (dish) => tags.some(tag => dish.tags.includes(tag))
+        (dish) => dish.tags && tags.some(tag => dish.tags.includes(tag))
       );
     }
     

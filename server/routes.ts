@@ -44,8 +44,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get dishes for a specific day and time
   app.get("/api/suggestions/daily", async (req: Request, res: Response) => {
     try {
-      const day = daySchema.parse(req.query.day);
-      const timeOfDay = timeOfDaySchema.parse(req.query.timeOfDay);
+      // Handle missing parameters with defaults
+      const day = req.query.day ? daySchema.parse(req.query.day) : "Any";
+      const timeOfDay = req.query.timeOfDay ? timeOfDaySchema.parse(req.query.timeOfDay) : "Any";
       
       // Tags are optional
       const tagsParam = req.query.tags as string | undefined;
@@ -77,7 +78,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Apply tag filtering if provided
       if (tags && tags.length > 0) {
         dishes = dishes.filter(dish => 
-          tags.some(tag => dish.tags.includes(tag as DishTag))
+          dish.tags && tags.some(tag => dish.tags.includes(tag as DishTag))
         );
       }
       

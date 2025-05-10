@@ -58,18 +58,41 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext }: ModernCo
     return iconMap[id] || 'fas fa-calendar-day';
   };
   
+  // Define explicit types for our occasion items
+  type RegularOccasion = {
+    id: string;
+    name: string;
+    icon: string;
+    isSpecial?: false;
+  };
+  
+  type FestivalOccasion = {
+    id: string;
+    name: string;
+    icon: string;
+    isSpecial: true;
+    festival: Festival;
+  };
+  
   // Combine our festivals with other occasions
-  const occasions = [
-    { id: "family", name: "Family Gathering", icon: "fas fa-users" },
-    { id: "puja", name: "Puja Ceremony", icon: "fas fa-pray" },
-    { id: "party", name: "Party", icon: "fas fa-glass-cheers" },
-    ...festivals.map(festival => ({
-      id: festival.id,
-      name: festival.name,
-      icon: getFestivalIcon(festival.id),
-      isSpecial: true,
-      festival
-    }))
+  const regularOccasions: RegularOccasion[] = [
+    { id: "family", name: "Family Gathering", icon: "fas fa-users", isSpecial: false },
+    { id: "puja", name: "Puja Ceremony", icon: "fas fa-pray", isSpecial: false },
+    { id: "party", name: "Party", icon: "fas fa-glass-cheers", isSpecial: false },
+  ];
+  
+  const festivalOccasions: FestivalOccasion[] = festivals.map(festival => ({
+    id: festival.id,
+    name: festival.name,
+    icon: getFestivalIcon(festival.id),
+    isSpecial: true,
+    festival
+  }));
+  
+  // Combined occasions
+  const occasions: (RegularOccasion | FestivalOccasion)[] = [
+    ...regularOccasions,
+    ...festivalOccasions
   ];
 
   return (

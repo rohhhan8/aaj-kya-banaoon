@@ -5,6 +5,12 @@ import LoadingSpinner from "./LoadingSpinner";
 import { DishTag, DishSuggestion } from "@/lib/utils";
 import { apiRequest } from "@/lib/queryClient";
 import { useQuery } from "@tanstack/react-query";
+import { 
+  Festival, 
+  getFestivalById, 
+  getFestivalDishes
+} from "@/lib/festivalData";
+import { useAuth } from "@/lib/authContext";
 
 interface ModernSuggestionGridProps {
   mode: "daily" | "special";
@@ -23,6 +29,41 @@ const ModernSuggestionGrid = ({
   activeFilters,
   selectedOccasion 
 }: ModernSuggestionGridProps) => {
+  const { user } = useAuth();
+  const [selectedFestival, setSelectedFestival] = useState<Festival | null>(null);
+  const [festivalSuggestions, setFestivalSuggestions] = useState<DishSuggestion[]>([]);
+
+  // Check if selectedOccasion is a festival ID
+  useEffect(() => {
+    if (mode === 'special' && selectedOccasion) {
+      const festival = getFestivalById(selectedOccasion);
+      setSelectedFestival(festival || null);
+      
+      // If it's a festival, generate festival-specific suggestions
+      if (festival) {
+        const dishes = getFestivalDishes(festival.id);
+        if (dishes.length > 0) {
+          // Transform the dishes into DishSuggestion objects
+          const suggestions: DishSuggestion[] = dishes.map((dish, index) => ({
+            id: `${festival.id}-dish-${index}`,
+            name: dish,
+            description: `A traditional dish commonly prepared during ${festival.name}. ${festival.significance}`,
+            imageUrl: `https://source.unsplash.com/random/300x200/?indian,${dish.replace(/\s+/g, ',')}`,
+            tags: ['Festive'] as DishTag[],
+            mealType: 'dinner'
+          }));
+          setFestivalSuggestions(suggestions);
+        } else {
+          setFestivalSuggestions([]);
+        }
+      } else {
+        setFestivalSuggestions([]);
+      }
+    } else {
+      setSelectedFestival(null);
+      setFestivalSuggestions([]);
+    }
+  }, [mode, selectedOccasion]);
   // Fetch suggestions based on mode (daily or special)
   const fetchDailySuggestions = async () => {
     const queryParams = new URLSearchParams({
@@ -144,6 +185,7 @@ const ModernSuggestionGrid = ({
                   tags={dish.tags}
                   index={index}
                   onSeeMore={() => handleSeeMore(dish)}
+                  onAuthPrompt={(reason) => console.log(reason)} // We would implement this later
                 />
               ))}
             </div>
@@ -163,7 +205,70 @@ const ModernSuggestionGrid = ({
           </motion.div>
         )}
         
-        {mode === 'special' && selectedOccasion && specialSuggestions.length > 0 ? (
+        {mode === 'special' && selectedFestival ? (
+          <motion.div 
+            key="festival-suggestions"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="py-4"
+          >
+            {/* Festival header */}
+            <div className="bg-white dark:bg-slate-800 shadow-lg rounded-xl p-6 mb-6">
+              <div className="flex flex-col md:flex-row md:items-start gap-6">
+                <div className="md:w-1/3 aspect-video rounded-lg overflow-hidden">
+                  <img 
+                    src={selectedFestival.imageUrl} 
+                    alt={selectedFestival.name} 
+                    className="w-full h-full object-cover" 
+                  />
+                </div>
+                <div className="md:w-2/3">
+                  <h2 className="text-3xl font-playfair font-bold text-charcoal dark:text-white mb-2">
+                    {selectedFestival.name}
+                  </h2>
+                  <p className="text-spice-brown dark:text-slate-300 mb-4">
+                    {selectedFestival.description}
+                  </p>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-charcoal dark:text-white mb-1">Significance</h3>
+                    <p className="text-spice-brown dark:text-slate-300">
+                      {selectedFestival.significance}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mb-1">
+                    <span className="text-sm font-medium text-charcoal dark:text-white">Region:</span>
+                    <span className="px-2 py-0.5 bg-saffron/20 dark:bg-marigold/20 text-saffron dark:text-marigold rounded-full text-xs">
+                      {selectedFestival.region}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Festival dishes */}
+            <h3 className="text-2xl font-playfair font-bold text-charcoal dark:text-white mb-4">
+              Traditional Dishes for {selectedFestival.name}
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {festivalSuggestions.map((dish: DishSuggestion, index: number) => (
+                <ModernSuggestionCard
+                  key={dish.id}
+                  id={dish.id}
+                  name={dish.name}
+                  description={dish.description}
+                  imageUrl={dish.imageUrl}
+                  tags={dish.tags}
+                  index={index}
+                  onSeeMore={() => handleSeeMore(dish)}
+                  onAuthPrompt={(reason) => console.log(reason)} // We would implement this later
+                />
+              ))}
+            </div>
+          </motion.div>
+        ) : mode === 'special' && selectedOccasion && specialSuggestions.length > 0 ? (
           <motion.div 
             key="special-suggestions"
             initial={{ opacity: 0 }}
@@ -183,6 +288,7 @@ const ModernSuggestionGrid = ({
                   tags={dish.tags}
                   index={index}
                   onSeeMore={() => handleSeeMore(dish)}
+                  onAuthPrompt={(reason) => console.log(reason)} // We would implement this later
                 />
               ))}
             </div>
@@ -233,6 +339,7 @@ const ModernSuggestionGrid = ({
                     tags={dish.tags}
                     index={index}
                     onSeeMore={() => handleSeeMore(dish)}
+                    onAuthPrompt={(reason) => console.log(reason)} // We would implement this later
                   />
                 ))}
               </div>

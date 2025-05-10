@@ -1,62 +1,97 @@
 import { motion } from "framer-motion";
 import useCurrentDateTime from "@/hooks/useCurrentDateTime";
+import ThemeToggle from "./ThemeToggle";
+import FamilySizeSelector from "./FamilySizeSelector";
 
 interface HeaderProps {
-  familySize?: number;
+  familySize: number;
+  onFamilySizeChange: (size: number) => void;
 }
 
-const Header = ({ familySize = 4 }: HeaderProps) => {
+const Header = ({ familySize, onFamilySizeChange }: HeaderProps) => {
   const { day, timeOfDay } = useCurrentDateTime();
 
   return (
-    <header className="relative">
-      <div className="bg-gradient-to-r from-tomato-red to-warm-orange h-96 relative overflow-hidden">
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+    <header className="relative bg-gradient-to-b from-haldi to-deep-saffron dark:from-slate-900 dark:to-slate-800 min-h-screen flex flex-col">
+      {/* Background overlay pattern */}
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoNDB2NDBoLTQweiIvPjxjaXJjbGUgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgY3g9IjIwIiBjeT0iMjAiIHI9IjEiLz48L2c+PC9zdmc+')] opacity-40"></div>
+      
+      {/* Navigation area */}
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center relative z-10">
         <motion.div 
-          className="container mx-auto px-4 py-8 relative z-10 flex flex-col h-full justify-center"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          className="text-white dark:text-white"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
         >
-          <div className="text-center">
-            <motion.h1 
-              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white font-playfair mb-4"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.6 }}
+          <h3 className="font-quicksand font-bold text-lg">RasaRoots</h3>
+        </motion.div>
+        
+        <div className="flex items-center space-x-2">
+          <FamilySizeSelector 
+            familySize={familySize} 
+            onChange={onFamilySizeChange} 
+          />
+          <ThemeToggle />
+        </div>
+      </div>
+      
+      {/* Main hero content */}
+      <div className="flex-grow flex flex-col justify-center items-center text-center relative z-10 px-4 pb-24">
+        <motion.div
+          className="max-w-3xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
+        >
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 font-playfair">
+            Rasa<span className="text-mint-green dark:text-teal-400">Roots</span>
+          </h1>
+          <p className="text-xl md:text-2xl text-white/90 font-nunito mb-8 max-w-2xl mx-auto">
+            Discover the perfect dishes for your Indian kitchen, tailored to your day, time, and special occasions
+          </p>
+          
+          <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 mt-8">
+            <motion.div 
+              className="flex items-center justify-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 text-white"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              Contextual Cooking Guide
-            </motion.h1>
-            <motion.p 
-              className="text-xl text-cream font-nunito mb-8"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 0.6 }}
+              <i className="fas fa-calendar-day text-mint-green dark:text-teal-400"></i>
+              <span className="font-quicksand font-medium">{day}</span>
+            </motion.div>
+            
+            <motion.div 
+              className="flex items-center justify-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 text-white"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              Perfect dishes for every occasion in Indian households
-            </motion.p>
-            <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6">
-              <motion.div 
-                className="bg-white/90 rounded-full px-6 py-3 flex items-center space-x-2 shadow-lg"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6, duration: 0.5 }}
-              >
-                <i className="fas fa-calendar-day text-tomato-red"></i>
-                <span className="font-quicksand font-medium text-charcoal">{day} {timeOfDay}</span>
-              </motion.div>
-              <motion.div 
-                className="bg-white/90 rounded-full px-6 py-3 flex items-center space-x-2 shadow-lg"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7, duration: 0.5 }}
-              >
-                <i className="fas fa-user-friends text-tomato-red"></i>
-                <span className="font-quicksand font-medium text-charcoal">Family of {familySize}</span>
-              </motion.div>
-            </div>
+              <i className="fas fa-clock text-mint-green dark:text-teal-400"></i>
+              <span className="font-quicksand font-medium">{timeOfDay}</span>
+            </motion.div>
           </div>
+        </motion.div>
+        
+        {/* Scroll indicator */}
+        <motion.div 
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white/70"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 0.5, 
+            delay: 1.2,
+            repeat: Infinity,
+            repeatType: "reverse",
+            repeatDelay: 0.2
+          }}
+        >
+          <i className="fas fa-chevron-down"></i>
         </motion.div>
       </div>
     </header>

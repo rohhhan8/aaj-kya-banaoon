@@ -16,13 +16,24 @@ document.head.appendChild(fontAwesomeElement);
 
 // Set meta title
 const titleElement = document.createElement("title");
-titleElement.textContent = "Contextual Cooking Guide - AI-Driven Suggestions for Indian Households";
+titleElement.textContent = "RasaRoots - AI-Powered Indian Cooking Companion";
 document.head.appendChild(titleElement);
 
 // Set meta description
 const metaDescription = document.createElement("meta");
 metaDescription.name = "description";
-metaDescription.content = "An AI-driven platform that helps Indian families decide what to cook for daily routines and special occasions based on cultural context and preferences.";
+metaDescription.content = "Discover the perfect dishes for your Indian kitchen with RasaRoots - your AI-powered cooking companion tailored to time, season, and special occasions.";
 document.head.appendChild(metaDescription);
+
+// Update Open Graph tags
+const ogTitle = document.createElement("meta");
+ogTitle.setAttribute("name", "og:title");
+ogTitle.setAttribute("content", "RasaRoots - AI-Powered Indian Cooking Companion");
+document.head.appendChild(ogTitle);
+
+const ogDescription = document.createElement("meta");
+ogDescription.setAttribute("name", "og:description");
+ogDescription.setAttribute("content", "Discover the perfect dishes for your Indian kitchen with RasaRoots - tailored to your day, time, and special occasions.");
+document.head.appendChild(ogDescription);
 
 createRoot(document.getElementById("root")!).render(<App />);

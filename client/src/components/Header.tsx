@@ -14,7 +14,11 @@ const Header = ({ familySize, onFamilySizeChange }: HeaderProps) => {
   return (
     <header className="relative bg-gradient-to-b from-haldi to-deep-saffron dark:from-slate-900 dark:to-slate-800 min-h-screen flex flex-col">
       {/* Background overlay pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoNDB2NDBoLTQweiIvPjxjaXJjbGUgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgY3g9IjIwIiBjeT0iMjAiIHI9IjEiLz48L2c+PC9zdmc+')] opacity-40"></div>
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0wIDBoNDB2NDBoLTQweiIvPjxjaXJjbGUgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgY3g9IjIwIiBjeT0iMjAiIHI9IjEiLz48L2c+PC9zdmc+')] opacity-30"></div>
+      
+      {/* Decorative elements */}
+      <div className="absolute bottom-20 left-10 w-32 h-32 bg-saffron/20 rounded-full blur-3xl"></div>
+      <div className="absolute top-32 right-10 w-40 h-40 bg-mint-green/10 rounded-full blur-3xl"></div>
       
       {/* Navigation area */}
       <div className="container mx-auto px-4 py-4 flex justify-between items-center relative z-10">

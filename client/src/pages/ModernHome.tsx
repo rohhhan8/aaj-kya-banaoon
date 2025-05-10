@@ -7,7 +7,7 @@ import ModernFilterBar from "@/components/ModernFilterBar";
 import ModernContextualHeader from "@/components/ModernContextualHeader";
 import ModernSuggestionGrid from "@/components/ModernSuggestionGrid";
 import ModernFooter from "@/components/ModernFooter";
-import ThemeProvider from "@/components/ThemeProvider";
+import ThemeToggle from "@/components/ThemeToggle";
 import useCurrentDateTime from "@/hooks/useCurrentDateTime";
 import { DishTag, getDayAndMealContext } from "@/lib/utils";
 
@@ -46,12 +46,11 @@ const ModernHome = () => {
   };
 
   return (
-    <ThemeProvider>
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="min-h-screen bg-off-white dark:bg-slate-900"
+        className="min-h-screen bg-background"
       >
         <Header 
           familySize={familySize} 
@@ -94,7 +93,6 @@ const ModernHome = () => {
         
         <ModernFooter />
       </motion.div>
-    </ThemeProvider>
   );
 };
 

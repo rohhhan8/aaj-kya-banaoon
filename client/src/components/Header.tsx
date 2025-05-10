@@ -1,17 +1,11 @@
 import { motion } from "framer-motion";
 import useCurrentDateTime from "@/hooks/useCurrentDateTime";
 import ThemeToggle from "./ThemeToggle";
-import FamilySizeSelector from "./FamilySizeSelector";
 import LoginButton from "./LoginButton";
 import UserProfile from "./UserProfile";
 import { useAuth } from "@/lib/authContext";
 
-interface HeaderProps {
-  familySize: number;
-  onFamilySizeChange: (size: number) => void;
-}
-
-const Header = ({ familySize, onFamilySizeChange }: HeaderProps) => {
+const Header = () => {
   const { day, timeOfDay } = useCurrentDateTime();
   const { user } = useAuth();
 
@@ -36,10 +30,6 @@ const Header = ({ familySize, onFamilySizeChange }: HeaderProps) => {
         </motion.div>
         
         <div className="flex items-center space-x-2">
-          <FamilySizeSelector 
-            familySize={familySize} 
-            onChange={onFamilySizeChange} 
-          />
           {user ? <UserProfile /> : <LoginButton />}
           <ThemeToggle />
         </div>

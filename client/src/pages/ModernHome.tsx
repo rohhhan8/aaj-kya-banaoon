@@ -14,7 +14,7 @@ import { DishTag, getDayAndMealContext } from "@/lib/utils";
 import { useAuth } from "@/lib/authContext";
 
 const ModernHome = () => {
-  const { day, timeOfDay } = useCurrentDateTime();
+  const { day: autoDay, timeOfDay: autoTimeOfDay } = useCurrentDateTime();
   const { user } = useAuth();
   const [mode, setMode] = useState<"daily" | "special">("daily");
   const [showTiffin, setShowTiffin] = useState(false);
@@ -23,6 +23,11 @@ const ModernHome = () => {
   const [familySize, setFamilySize] = useState<number>(4);
   const [authPromptOpen, setAuthPromptOpen] = useState(false);
   const [authPromptReason, setAuthPromptReason] = useState<'filter' | 'tiffin' | 'favorite' | 'occasion'>('filter');
+  const [manualTimeOfDay, setManualTimeOfDay] = useState<string>("auto");
+  
+  // Use either manual or auto time of day
+  const timeOfDay = manualTimeOfDay === "auto" ? autoTimeOfDay : manualTimeOfDay;
+  const day = autoDay;
   
   // Check if user has already seen the prompt and chosen to continue as guest
   const hasGuestAccess = typeof window !== 'undefined' && localStorage.getItem('guestAccess') === 'true';
@@ -86,6 +91,10 @@ const ModernHome = () => {
     setFamilySize(size);
   };
   
+  const handleTimeOfDayChange = (time: string) => {
+    setManualTimeOfDay(time);
+  };
+  
   const handleCloseAuthPrompt = () => {
     setAuthPromptOpen(false);
   };
@@ -97,10 +106,7 @@ const ModernHome = () => {
         transition={{ duration: 0.5 }}
         className="min-h-screen bg-background"
       >
-        <Header 
-          familySize={familySize} 
-          onFamilySizeChange={handleFamilySizeChange} 
-        />
+        <Header />
         
         <div className="pt-6">
           <UserGreeting 
@@ -110,7 +116,10 @@ const ModernHome = () => {
           
           <ModernModeToggle 
             onModeChange={handleModeChange} 
-            onTiffinToggle={handleTiffinToggle} 
+            onTiffinToggle={handleTiffinToggle}
+            familySize={familySize}
+            onFamilySizeChange={handleFamilySizeChange}
+            onTimeChange={handleTimeOfDayChange}
           />
           
           <ModernFilterBar onFilterChange={handleFilterChange} />

@@ -41,6 +41,13 @@ const ModernModeToggle = ({
     setTiffinEnabled(checked);
     onTiffinToggle(checked);
   };
+  
+  const handleTimeChange = (value: string) => {
+    setSelectedTime(value);
+    if (onTimeChange) {
+      onTimeChange(value);
+    }
+  };
 
   return (
     <motion.div 
@@ -83,7 +90,8 @@ const ModernModeToggle = ({
             </Tabs>
           </div>
           
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-wrap items-center gap-4">
+            {/* Tiffin Toggle */}
             <div className="flex items-center space-x-2">
               <Switch 
                 id="lunch-tiffin" 
@@ -97,6 +105,28 @@ const ModernModeToggle = ({
                 </div>
               </Label>
             </div>
+            
+            {/* Time of Day Selection */}
+            <div className="flex items-center space-x-2">
+              <Select value={selectedTime} onValueChange={handleTimeChange}>
+                <SelectTrigger className="w-[140px] font-quicksand">
+                  <SelectValue placeholder="Time of Day" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="auto">Auto Detect</SelectItem>
+                  <SelectItem value="Morning">Morning</SelectItem>
+                  <SelectItem value="Afternoon">Afternoon</SelectItem>
+                  <SelectItem value="Evening">Evening</SelectItem>
+                  <SelectItem value="Night">Night</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Family Size Selector */}
+            <FamilySizeSelector
+              familySize={familySize}
+              onChange={onFamilySizeChange}
+            />
           </div>
         </div>
       </div>

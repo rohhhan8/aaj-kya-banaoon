@@ -66,12 +66,12 @@ const ModernModeToggle = ({
         {/* Main mode toggle */}
         <div className="mb-5">
           <div className="flex justify-center mb-1">
-            <div className="bg-white/50 dark:bg-slate-700/50 p-1 rounded-full shadow-sm inline-flex">
+            <div className="bg-white/20 dark:bg-slate-700/30 p-1 rounded-full shadow-sm inline-flex">
               <motion.button
                 className={`px-5 py-2.5 rounded-full font-quicksand flex items-center gap-2 transition-all ${
                   activeMode === 'daily' 
                     ? 'bg-gradient-to-r from-saffron/90 to-deep-saffron/90 dark:from-teal-600 dark:to-teal-700 text-white shadow-md' 
-                    : 'text-charcoal/70 dark:text-white/70 hover:bg-white/50 dark:hover:bg-slate-600/50'
+                    : 'bg-transparent text-charcoal/80 dark:text-white/80 hover:bg-white/20 dark:hover:bg-slate-600/20'
                 }`}
                 onClick={() => handleModeChange('daily')}
                 whileHover={{ scale: 1.02 }}
@@ -85,7 +85,7 @@ const ModernModeToggle = ({
                 className={`px-5 py-2.5 rounded-full font-quicksand flex items-center gap-2 transition-all ${
                   activeMode === 'special' 
                     ? 'bg-gradient-to-r from-saffron/90 to-deep-saffron/90 dark:from-teal-600 dark:to-teal-700 text-white shadow-md' 
-                    : 'text-charcoal/70 dark:text-white/70 hover:bg-white/50 dark:hover:bg-slate-600/50'
+                    : 'bg-transparent text-charcoal/80 dark:text-white/80 hover:bg-white/20 dark:hover:bg-slate-600/20'
                 }`}
                 onClick={() => handleModeChange('special')}
                 whileHover={{ scale: 1.02 }}

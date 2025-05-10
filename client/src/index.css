@@ -68,7 +68,7 @@
   }
 
   body {
-    @apply bg-off-white text-foreground font-nunito;
+    @apply bg-background text-foreground font-nunito;
   }
 
   h1, h2, h3, h4, h5, h6 {

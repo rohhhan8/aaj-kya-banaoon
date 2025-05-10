@@ -66,33 +66,33 @@ const ModernModeToggle = ({
         {/* Main mode toggle */}
         <div className="mb-5">
           <div className="flex justify-center mb-1">
-            <div className="bg-gray-100 dark:bg-slate-700/30 p-1 rounded-full shadow-sm inline-flex">
+            <div className="bg-gray-100 dark:bg-slate-700/30 p-1 rounded-full shadow-md inline-flex">
               <motion.button
                 className={`px-5 py-2.5 rounded-full font-quicksand flex items-center gap-2 transition-all ${
                   activeMode === 'daily' 
-                    ? 'bg-gradient-to-r from-saffron/90 to-deep-saffron/90 dark:from-teal-600 dark:to-teal-700 text-white shadow-md' 
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 dark:from-teal-600 dark:to-teal-700 text-white shadow-md' 
                     : 'bg-transparent text-charcoal/80 dark:text-white/80 hover:bg-gray-200 dark:hover:bg-slate-600/20'
                 }`}
                 onClick={() => handleModeChange('daily')}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <i className={`fas fa-clock ${activeMode === 'daily' ? 'text-white' : 'text-saffron dark:text-marigold'}`}></i>
-                <span>Daily Routine</span>
+                <i className={`fas fa-calendar-day ${activeMode === 'daily' ? 'text-white' : 'text-amber-600 dark:text-amber-400'}`}></i>
+                <span className="font-medium">Daily Routine</span>
               </motion.button>
               
               <motion.button
                 className={`px-5 py-2.5 rounded-full font-quicksand flex items-center gap-2 transition-all ${
                   activeMode === 'special' 
-                    ? 'bg-gradient-to-r from-saffron/90 to-deep-saffron/90 dark:from-teal-600 dark:to-teal-700 text-white shadow-md' 
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 dark:from-teal-600 dark:to-teal-700 text-white shadow-md' 
                     : 'bg-transparent text-charcoal/80 dark:text-white/80 hover:bg-gray-200 dark:hover:bg-slate-600/20'
                 }`}
                 onClick={() => handleModeChange('special')}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <i className={`fas fa-star ${activeMode === 'special' ? 'text-white' : 'text-saffron dark:text-marigold'}`}></i>
-                <span>Special Occasion</span>
+                <i className={`fas fa-star ${activeMode === 'special' ? 'text-white' : 'text-amber-600 dark:text-amber-400'}`}></i>
+                <span className="font-medium">Special Occasion</span>
               </motion.button>
             </div>
           </div>

@@ -110,11 +110,6 @@ const ModernHome = () => {
         <Header />
         
         <div className="pt-6">
-          <UserGreeting 
-            timeOfDay={timeOfDay}
-            day={day}
-          />
-          
           <ModernModeToggle 
             onModeChange={handleModeChange} 
             onTiffinToggle={handleTiffinToggle}

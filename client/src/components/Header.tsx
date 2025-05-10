@@ -23,7 +23,7 @@ const Header = ({ familySize, onFamilySizeChange }: HeaderProps) => {
       {/* Navigation area */}
       <div className="container mx-auto px-4 py-4 flex justify-between items-center relative z-10">
         <motion.div 
-          className="text-white dark:text-white"
+          className="text-charcoal dark:text-white"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
@@ -48,16 +48,16 @@ const Header = ({ familySize, onFamilySizeChange }: HeaderProps) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 font-playfair">
+          <h1 className="text-5xl md:text-7xl font-bold text-charcoal dark:text-white mb-6 font-playfair">
             Rasa<span className="text-mint-green dark:text-teal-400">Roots</span>
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 font-nunito mb-8 max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl text-charcoal dark:text-white/90 font-nunito mb-8 max-w-2xl mx-auto">
             Discover the perfect dishes for your Indian kitchen, tailored to your day, time, and special occasions
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 mt-8">
             <motion.div 
-              className="flex items-center justify-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 text-white"
+              className="flex items-center justify-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 text-charcoal dark:text-white"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
@@ -69,7 +69,7 @@ const Header = ({ familySize, onFamilySizeChange }: HeaderProps) => {
             </motion.div>
             
             <motion.div 
-              className="flex items-center justify-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 text-white"
+              className="flex items-center justify-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 text-charcoal dark:text-white"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.7 }}
@@ -84,7 +84,7 @@ const Header = ({ familySize, onFamilySizeChange }: HeaderProps) => {
         
         {/* Scroll indicator */}
         <motion.div 
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white/70"
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-charcoal dark:text-white/70"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ 

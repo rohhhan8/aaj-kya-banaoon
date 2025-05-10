@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 import UserGreeting from "@/components/UserGreeting";
@@ -7,9 +7,11 @@ import ModernFilterBar from "@/components/ModernFilterBar";
 import ModernContextualHeader from "@/components/ModernContextualHeader";
 import ModernSuggestionGrid from "@/components/ModernSuggestionGrid";
 import ModernFooter from "@/components/ModernFooter";
+import AuthPrompt from "@/components/AuthPrompt";
 import ThemeToggle from "@/components/ThemeToggle";
 import useCurrentDateTime from "@/hooks/useCurrentDateTime";
 import { DishTag, getDayAndMealContext } from "@/lib/utils";
+import { useAuth } from "@/lib/authContext";
 
 const ModernHome = () => {
   const { day, timeOfDay } = useCurrentDateTime();

@@ -51,13 +51,13 @@ const UserProfile = () => {
         
         <DropdownMenuItem 
           className="cursor-pointer" 
-          onClick={() => window.location.href="/"}>
-          My Preferences
+          onClick={() => window.location.href="/dashboard"}>
+          Dashboard
         </DropdownMenuItem>
         
         <DropdownMenuItem 
           className="cursor-pointer" 
-          onClick={() => window.location.href="/"}>
+          onClick={() => window.location.href="/dashboard?tab=favorites"}>
           Saved Recipes
         </DropdownMenuItem>
         

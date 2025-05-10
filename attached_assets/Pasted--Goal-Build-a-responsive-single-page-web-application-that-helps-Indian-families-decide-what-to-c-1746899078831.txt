@@ -1,0 +1,196 @@
+🎯 Goal:
+Build a responsive, single-page web application that helps Indian families decide what to cook for various real-life situations — be it daily routines (like Monday morning tiffin or Sunday family lunch) or special occasions (parties, pujas, festivals). The system should suggest relevant dishes based on cultural norms, time of day, occasion, and user preferences. No recipes need to be shown at this stage — only dish suggestions with culturally justified reasoning.
+
+🔧 Full-Stack Application Requirements
+
+🖥️ Frontend (Web App)
+
+Framework: Next.js (React-based SPA framework with routing)
+
+Design Goals:
+
+Full header screen layout
+
+Expressive typography using food-friendly fonts (e.g., Quicksand, Nunito, or Playfair Display)
+
+Card-based grid layout for suggestions (3–4 per row, responsive to screen size)
+
+Minimalist yet warm UI with a food-based color palette:
+
+Primary: Warm Orange (#FFA500) / Tomato Red
+
+Secondary: Mint Green / Cream / Off-White
+
+Accent: Charcoal Gray / Spice Brown
+
+Use Framer Motion or GSAP for animations:
+
+Smooth transitions when cards appear
+
+Page mode switches (e.g., daily ↔ occasion) should have fade or slide transitions
+
+Single-page experience (SPA) – all mode switches and navigation handled without reloading
+
+Responsive on mobile, tablet, desktop
+
+Dark Mode Toggle: Global dark mode switch across the entire app for better UX
+
+Modes:
+
+Daily Mode (auto-trigger-based on time, day, preferences)
+
+Special Mode (user can manually choose: party, festival, puja, guests, etc.)
+
+Toggle for lunch tiffin suggestions if applicable
+
+Firebase Integration:
+
+Use Firebase for authentication (Email/Password, Google Sign-In)
+
+Guests can use the app without login for one-time use (e.g., access suggestions for breakfast)
+
+After the first interaction (e.g., tiffin or lunch toggle), require the user to sign up
+
+Firebase auth status stored in local/session storage for handling flow
+
+Dashboard UI:
+
+User greeting and avatar
+
+Past interactions history
+
+Favorite suggestions
+
+Filter preferences (e.g., Healthy, Quick)
+
+Logout button and account settings
+
+🧠 ML Engine (Microservice)
+
+Language: Python (FastAPI or Flask)
+
+Responsibilities:
+
+Classify and suggest dishes based on contextual input
+
+Generate justifications (“Why this dish?”)
+
+Accept mode input: daily vs occasion
+
+Accept user filters: Healthy / Light / Festive / Spicy / Quick
+
+Train and deploy models for ongoing improvement
+
+Datasets Required:
+
+Recipes (titles, tags, cuisine, meal type, effort level) – scraped or from public datasets (Kaggle)
+
+Cultural context data (e.g., Indian eating habits per weekday/time)
+
+Article/Blog-based sentence pairs (e.g., “Monday lunch – Bhindi Sabzi is ideal”)
+
+Optional: User behavior data to improve over time
+
+Techniques to Use:
+
+Decision Tree / XGBoost for base classification
+
+LightFM or rule-based for personalization
+
+NLP templates for justification text
+
+Optional: trend detection via seasonal clustering or time-series
+
+📦 Backend (API & Logic Layer)
+
+Language: Node.js or Django
+
+Responsibilities:
+
+User handling: signup, preferences, feedback
+
+Trigger logic: current time, day, calendar awareness
+
+Connect to ML engine via REST API
+
+Forward data to frontend with required formatting
+
+Database: MongoDB
+
+Collections:
+
+users
+
+preferences
+
+dish_context_suggestions
+
+mode_usage_history
+
+feedback (like/dislike for dish)
+
+🗂️ Directory Structure
+
+/project-root
+│
+├── /frontend (Next.js)
+│   ├── /components
+│   ├── /assets (images, fonts)
+│   ├── /pages
+│   ├── /styles
+│   └── /hooks
+│
+├── /backend (Node.js or Django)
+│   ├── /routes
+│   ├── /controllers
+│   ├── /models
+│   ├── /services
+│   └── server.js / app.js
+│
+├── /ml-service
+│   ├── /datasets
+│   ├── /models
+│   ├── /training
+│   ├── /api
+│   └── main.py (FastAPI or Flask)
+│
+├── /docs
+│   └── architecture.md
+│
+└── .env (MongoDB URI, Firebase Keys, ML API)
+
+📶 API Communication Flow
+
+Frontend triggers call on load or when user interacts
+
+Backend identifies mode (daily / special)
+
+Backend calls ML API with input:
+
+{
+  "day": "Monday",
+  "time": "Morning",
+  "mode": "daily",
+  "need_lunch": true,
+  "filters": ["Healthy", "Quick"]
+}
+
+ML API returns:
+
+Dish suggestions (breakfast, lunch, etc.)
+
+Justifications
+
+Optional alternatives
+
+Frontend renders cards in grid layout with animation.
+
+🧪 Optional Enhancements (Phase 2)
+
+Feedback training loop
+
+User preference learning
+
+Real-time trends scraper
+
+Occasion calendar integration (auto-detect Diwali, Holi, etc.)

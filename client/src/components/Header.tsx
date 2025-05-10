@@ -46,16 +46,9 @@ const Header = () => {
           <h1 className="text-5xl md:text-7xl font-bold text-charcoal dark:text-white mb-6 font-playfair">
             Rasa<span className="text-mint-green dark:text-teal-400">Roots</span>
           </h1>
-          <p className="text-xl md:text-2xl text-charcoal dark:text-white/90 font-nunito mb-4 max-w-2xl mx-auto">
+          <p className="text-xl md:text-2xl text-charcoal dark:text-white/90 font-nunito mb-8 max-w-2xl mx-auto">
             Discover the perfect dishes for your Indian kitchen, tailored to your day, time, and special occasions
           </p>
-          
-          <div className="text-lg text-charcoal/90 dark:text-white/80 font-quicksand mb-6 bg-white/10 backdrop-blur-sm rounded-full px-8 py-3 inline-block">
-            {timeOfDay === "Morning" && "Good morning! Start your day with these delicious options."}
-            {timeOfDay === "Afternoon" && "Good afternoon! Time for a satisfying midday meal."}
-            {timeOfDay === "Evening" && "Good evening! Enjoy these dinner recommendations."}
-            {timeOfDay === "Night" && "Still up? These light options are perfect for a late meal."}
-          </div>
           
           <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-6 mt-8">
             <motion.div 

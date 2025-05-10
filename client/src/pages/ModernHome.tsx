@@ -9,6 +9,7 @@ import ModernSuggestionGrid from "@/components/ModernSuggestionGrid";
 import ModernFooter from "@/components/ModernFooter";
 import AuthPrompt from "@/components/AuthPrompt";
 import ThemeToggle from "@/components/ThemeToggle";
+import DayTimeGreeting from "@/components/DayTimeGreeting";
 import useCurrentDateTime from "@/hooks/useCurrentDateTime";
 import { DishTag, getDayAndMealContext } from "@/lib/utils";
 import { useAuth } from "@/lib/authContext";
@@ -123,6 +124,9 @@ const ModernHome = () => {
           />
           
           <ModernFilterBar onFilterChange={handleFilterChange} />
+          
+          {/* Adding the day-time greeting component */}
+          {mode === 'daily' && <DayTimeGreeting day={day} timeOfDay={timeOfDay} />}
           
           <ModernContextualHeader 
             mode={mode}

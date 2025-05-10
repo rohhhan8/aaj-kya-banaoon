@@ -1,8 +1,9 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { DishTag } from "../client/src/lib/utils";
+import axios from "axios";
 
 const daySchema = z.enum([
   "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Any"
@@ -78,7 +79,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Apply tag filtering if provided
       if (tags && tags.length > 0) {
         dishes = dishes.filter(dish => 
-          dish.tags && tags.some(tag => dish.tags.includes(tag as DishTag))
+          dish.tags && tags.some(tag => dish.tags?.includes(tag as DishTag))
         );
       }
       
@@ -109,6 +110,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(feedback);
     } catch (error) {
       res.status(500).json({ message: "Failed to save feedback" });
+    }
+  });
+
+  // ML API proxy endpoints
+  
+  // ML API health check
+  app.get("/api/ml/health", async (req: Request, res: Response) => {
+    try {
+      const mlResponse = await axios.get("http://localhost:5100/health");
+      res.json(mlResponse.data);
+    } catch (error) {
+      console.error("Error connecting to ML API:", error);
+      res.status(503).json({ message: "ML service unavailable" });
+    }
+  });
+  
+  // ML API recommendation endpoint
+  app.post("/api/ml/recommendations", async (req: Request, res: Response) => {
+    try {
+      const mlResponse = await axios.post("http://localhost:5100/recommendations", req.body);
+      res.json(mlResponse.data);
+    } catch (error) {
+      console.error("Error getting ML recommendations:", error);
+      res.status(500).json({ message: "Failed to get ML recommendations" });
+    }
+  });
+  
+  // ML API recommendation by occasion
+  app.post("/api/ml/recommendations/occasion", async (req: Request, res: Response) => {
+    try {
+      const mlResponse = await axios.post("http://localhost:5100/recommendations/occasion", req.body);
+      res.json(mlResponse.data);
+    } catch (error) {
+      console.error("Error getting ML occasion recommendations:", error);
+      res.status(500).json({ message: "Failed to get ML occasion recommendations" });
+    }
+  });
+  
+  // ML API similar meals recommendation
+  app.post("/api/ml/recommendations/similar", async (req: Request, res: Response) => {
+    try {
+      const mlResponse = await axios.post("http://localhost:5100/recommendations/similar", req.body);
+      res.json(mlResponse.data);
+    } catch (error) {
+      console.error("Error getting ML similar recommendations:", error);
+      res.status(500).json({ message: "Failed to get ML similar recommendations" });
+    }
+  });
+  
+  // ML API time-based recommendation
+  app.get("/api/ml/recommendations/time/:timeOfDay", async (req: Request, res: Response) => {
+    try {
+      const { timeOfDay } = req.params;
+      const { familySize } = req.query;
+      
+      const mlResponse = await axios.get(`http://localhost:5100/recommendations/time/${timeOfDay}`, {
+        params: { family_size: familySize }
+      });
+      
+      res.json(mlResponse.data);
+    } catch (error) {
+      console.error("Error getting ML time recommendations:", error);
+      res.status(500).json({ message: "Failed to get ML time recommendations" });
     }
   });
 

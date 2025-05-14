@@ -147,7 +147,7 @@ export class MemStorage implements IStorage {
       {
         name: "Poha",
         description: "A light, flattened rice dish that's quick to prepare and provides steady energy for busy Monday mornings. A staple breakfast in many Indian homes.",
-        imageUrl: "https://images.unsplash.com/photo-1605888969139-42cca4308aa2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400",
+        imageUrl: "https://pixabay.com/photos/poha-breakfast-indian-breakfast-7123148/",
         tags: ["Quick", "Healthy"],
         mealType: "breakfast",
         dayRecommended: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],

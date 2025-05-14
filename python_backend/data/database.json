@@ -1,0 +1,56 @@
+{
+  "collections": {
+    "dishes": [
+      {
+        "name": "Test Dish",
+        "description": "A test dish for database verification",
+        "tags": [
+          "Test",
+          "Sample"
+        ],
+        "id": "21"
+      },
+      {
+        "id": "1",
+        "name": "Poha",
+        "description": "A light, flattened rice dish that's quick to prepare and provides steady energy for busy Monday mornings. A staple breakfast in many Indian homes.",
+        "imageUrl": "https://source.unsplash.com/random/300x200/?poha",
+        "tags": [
+          "Quick",
+          "Healthy"
+        ],
+        "mealType": "breakfast",
+        "dayRecommended": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "timeOfDay": [
+          "Morning"
+        ]
+      },
+      {
+        "id": "2",
+        "name": "Idli Sambar",
+        "description": "These steamed rice cakes with lentil soup are perfect for Mondays when you need a light yet filling breakfast that's gentle on the stomach after weekend indulgences.",
+        "imageUrl": "https://source.unsplash.com/random/300x200/?idli",
+        "tags": [
+          "Healthy",
+          "Light"
+        ],
+        "mealType": "breakfast",
+        "dayRecommended": [
+          "Monday",
+          "Wednesday",
+          "Friday",
+          "Sunday"
+        ],
+        "timeOfDay": [
+          "Morning"
+        ]
+      }
+    ]
+  }
+}

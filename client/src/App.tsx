@@ -1,37 +1,49 @@
-import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import ThemeProvider from "@/components/ThemeProvider";
-import { AuthProvider } from "@/lib/authContext";
-import ModernHome from "@/pages/ModernHome";
-import Dashboard from "@/pages/Dashboard";
-import NotFound from "@/pages/not-found";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { AuthProvider } from '@/lib/authContext';
+import ModernHome from '@/pages/ModernHome';
+import HomePage from '@/pages/HomePage';
+import MlExplorer from '@/pages/MlExplorer';
+import { Button } from '@/components/ui/button';
+import { Toaster } from '@/components/ui/toaster';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import NotFound from '@/pages/not-found';
+import Dashboard from '@/pages/Dashboard';
 
-function Router() {
-  return (
-    <Switch>
-      <Route path="/" component={ModernHome} />
-      <Route path="/dashboard" component={Dashboard} />
-      {/* Fallback to 404 */}
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
+// Create a QueryClient instance
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 function App() {
   return (
-    <ThemeProvider>
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
           <TooltipProvider>
-            <Toaster />
-            <Router />
+            <Router>
+              <div className="min-h-screen bg-cream dark:bg-slate-900 transition-colors duration-300">
+                <Toaster />
+                
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/ml-explorer" element={<MlExplorer />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
+            </Router>
           </TooltipProvider>
-        </QueryClientProvider>
+        </ThemeProvider>
       </AuthProvider>
-    </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 

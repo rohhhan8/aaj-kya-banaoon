@@ -31,12 +31,12 @@ const ThemeToggle = () => {
         variant="ghost" 
         size="icon"
         onClick={toggleTheme}
-        className="rounded-full w-10 h-10 bg-opacity-20 backdrop-blur-sm"
+        className={`rounded-full w-10 h-10 ${theme === "dark" ? "bg-slate-700/40" : "bg-white/40"} backdrop-blur-sm hover:bg-opacity-50`}
         aria-label="Toggle theme"
       >
         {theme === "dark" ? (
           <svg
-            className="w-5 h-5 text-yellow-300 fill-current"
+            className="w-5 h-5 text-marigold fill-current"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
           >
@@ -44,7 +44,7 @@ const ThemeToggle = () => {
           </svg>
         ) : (
           <svg
-            className="w-5 h-5 text-gray-800 fill-current"
+            className="w-5 h-5 text-spice-brown fill-current"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
           >

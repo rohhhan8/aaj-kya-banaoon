@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
-import UserGreeting from "@/components/UserGreeting";
 import ModernModeToggle from "@/components/ModernModeToggle";
 import ModernFilterBar from "@/components/ModernFilterBar";
 import ModernContextualHeader from "@/components/ModernContextualHeader";
@@ -9,7 +8,6 @@ import ModernSuggestionGrid from "@/components/ModernSuggestionGrid";
 import ModernFooter from "@/components/ModernFooter";
 import AuthPrompt from "@/components/AuthPrompt";
 import ThemeToggle from "@/components/ThemeToggle";
-import DayTimeGreeting from "@/components/DayTimeGreeting";
 import useCurrentDateTime from "@/hooks/useCurrentDateTime";
 import { DishTag, getDayAndMealContext } from "@/lib/utils";
 import { useAuth } from "@/lib/authContext";
@@ -26,6 +24,9 @@ const ModernHome = () => {
   const [authPromptReason, setAuthPromptReason] = useState<'filter' | 'tiffin' | 'favorite' | 'occasion'>('filter');
   const [manualTimeOfDay, setManualTimeOfDay] = useState<string>("auto");
   
+  // Create a ref for the suggestions section to scroll to
+  const suggestionsRef = useRef<HTMLDivElement>(null);
+  
   // Use either manual or auto time of day
   const timeOfDay = manualTimeOfDay === "auto" ? autoTimeOfDay : manualTimeOfDay;
   const day = autoDay;
@@ -35,6 +36,15 @@ const ModernHome = () => {
   
   // Get context based on day and time
   const { contextTitle, contextDescription } = getDayAndMealContext(day, timeOfDay);
+  
+  // Function to scroll to suggestions
+  const scrollToSuggestions = () => {
+    if (suggestionsRef.current) {
+      setTimeout(() => {
+        suggestionsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100); // Small delay to ensure content has rendered
+    }
+  };
   
   const showAuthPromptIfNeeded = (reason: 'filter' | 'tiffin' | 'favorite' | 'occasion') => {
     // If user is authenticated or has already chosen to continue as guest, don't show prompt
@@ -56,6 +66,8 @@ const ModernHome = () => {
     if (newMode === "daily") {
       setSelectedOccasion(undefined);
     }
+    
+    // Removed auto-scrolling from mode change
   };
   
   const handleTiffinToggle = (tiffinEnabled: boolean) => {
@@ -86,6 +98,9 @@ const ModernHome = () => {
     }
     
     setSelectedOccasion(occasion);
+    
+    // Scroll to suggestions when occasion is selected
+    scrollToSuggestions();
   };
 
   const handleFamilySizeChange = (size: number) => {
@@ -120,9 +135,6 @@ const ModernHome = () => {
           
           <ModernFilterBar onFilterChange={handleFilterChange} />
           
-          {/* Adding the day-time greeting component */}
-          {mode === 'daily' && <DayTimeGreeting day={day} timeOfDay={timeOfDay} />}
-          
           <ModernContextualHeader 
             mode={mode}
             day={day}
@@ -136,6 +148,8 @@ const ModernHome = () => {
             }}
           />
           
+          {/* Added ref to the suggestions grid for scrolling */}
+          <div ref={suggestionsRef}>
           <ModernSuggestionGrid 
             mode={mode}
             day={day}
@@ -144,6 +158,7 @@ const ModernHome = () => {
             activeFilters={activeFilters}
             selectedOccasion={selectedOccasion}
           />
+          </div>
         </div>
         
         <ModernFooter />

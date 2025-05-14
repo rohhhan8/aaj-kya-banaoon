@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/authContext";
 import { motion } from "framer-motion";
 import {
@@ -18,8 +18,16 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 import ThemeToggle from "@/components/ThemeToggle";
 import { DishTag } from "@/lib/utils";
+import {
+  getUserPreferences,
+  updatePreferredTags,
+  updateFamilySize,
+  updateRegionalPreferences,
+  UserPreferences
+} from "@/lib/userPreferences";
 
 // This would ideally come from the backend
 const mockFavorites = [
@@ -66,34 +74,152 @@ const mockInteractions = [
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
   const [loadingFavorites, setLoadingFavorites] = useState(true);
+  const [loadingPreferences, setLoadingPreferences] = useState(true);
   const [favorites, setFavorites] = useState(mockFavorites);
   const [interactions, setInteractions] = useState(mockInteractions);
   const [preferredTags, setPreferredTags] = useState<DishTag[]>(["Healthy", "Quick"]);
+  const [familySize, setFamilySize] = useState(4);
+  const [regionalPreferences, setRegionalPreferences] = useState<string[]>([]);
+  const [selectedRegions, setSelectedRegions] = useState<Record<string, boolean>>({
+    "North Indian": false,
+    "South Indian": false,
+    "East Indian": false,
+    "West Indian": false,
+  });
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    // Redirect to home if not authenticated
     if (!user) {
-      setLocation("/");
+      navigate("/");
       return;
     }
     
-    // Simulate API calls
+    // Load user preferences
+    const loadUserPreferences = async () => {
+      if (user.uid) {
+        setLoadingPreferences(true);
+        try {
+          const prefs = await getUserPreferences(user.uid);
+          setPreferredTags(prefs.preferredTags);
+          setFamilySize(prefs.familySize);
+          
+          // Set regional preferences
+          if (prefs.regionalPreferences && prefs.regionalPreferences.length > 0) {
+            setRegionalPreferences(prefs.regionalPreferences);
+            
+            // Update selectedRegions object
+            const regions = {...selectedRegions};
+            prefs.regionalPreferences.forEach(region => {
+              if (region in regions) {
+                regions[region] = true;
+              }
+            });
+            setSelectedRegions(regions);
+          }
+        } catch (error) {
+          console.error("Error loading preferences:", error);
+        } finally {
+          setLoadingPreferences(false);
+        }
+      }
+    };
+    
+    loadUserPreferences();
+    
+    // Simulate API calls for favorites
     const timer = setTimeout(() => {
       setLoadingFavorites(false);
       // In a real application, these would be fetched from API
     }, 1000);
     
     return () => clearTimeout(timer);
-  }, [user, setLocation]);
+  }, [user, navigate]);
 
-  const handleTagToggle = (tag: DishTag) => {
-    if (preferredTags.includes(tag)) {
-      setPreferredTags(preferredTags.filter(t => t !== tag));
-    } else {
-      setPreferredTags([...preferredTags, tag]);
+  const handleTagToggle = async (tag: DishTag) => {
+    try {
+      let newTags: DishTag[];
+      
+      if (preferredTags.includes(tag)) {
+        newTags = preferredTags.filter(t => t !== tag);
+      } else {
+        newTags = [...preferredTags, tag];
+      }
+      
+      setPreferredTags(newTags);
+      
+      // Save to database if user is logged in
+      if (user?.uid) {
+        await updatePreferredTags(user.uid, newTags);
+        toast({
+          title: "Success",
+          description: "Preferences updated"
+        });
+      }
+    } catch (error) {
+      console.error("Error updating preferred tags:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save your preferences",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleFamilySizeChange = async (newSize: number) => {
+    try {
+      setFamilySize(newSize);
+      
+      // Save to database if user is logged in
+      if (user?.uid) {
+        await updateFamilySize(user.uid, newSize);
+        toast({
+          title: "Success",
+          description: "Family size updated"
+        });
+      }
+    } catch (error) {
+      console.error("Error updating family size:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save family size",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleRegionToggle = async (region: string) => {
+    try {
+      const newSelectedRegions = {
+        ...selectedRegions,
+        [region]: !selectedRegions[region]
+      };
+      setSelectedRegions(newSelectedRegions);
+      
+      // Create array of selected regions
+      const selected = Object.entries(newSelectedRegions)
+        .filter(([_, isSelected]) => isSelected)
+        .map(([name]) => name);
+      
+      setRegionalPreferences(selected);
+      
+      // Save to database if user is logged in
+      if (user?.uid) {
+        await updateRegionalPreferences(user.uid, selected);
+        toast({
+          title: "Success",
+          description: "Regional preferences updated"
+        });
+      }
+    } catch (error) {
+      console.error("Error updating regional preferences:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save regional preferences",
+        variant: "destructive"
+      });
     }
   };
 
@@ -102,8 +228,34 @@ const Dashboard = () => {
     // In a real app, you would call an API to remove from favorites
   };
 
+  const handleSaveAllPreferences = async () => {
+    if (!user?.uid) return;
+    
+    setIsSaving(true);
+    try {
+      // Save all preferences at once
+      await updatePreferredTags(user.uid, preferredTags);
+      await updateFamilySize(user.uid, familySize);
+      await updateRegionalPreferences(user.uid, regionalPreferences);
+      
+      toast({
+        title: "Success",
+        description: "Your preferences have been saved",
+      });
+    } catch (error) {
+      console.error("Error saving preferences:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save your preferences",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (!user) {
-    return null; // Will redirect in useEffect
+    return null;
   }
 
   return (
@@ -142,8 +294,8 @@ const Dashboard = () => {
             <ThemeToggle />
             <Button 
               variant="outline" 
-              onClick={() => setLocation("/")}
-              className="border-charcoal dark:border-white/20"
+              onClick={() => navigate("/")}
+              className="border-charcoal dark:border-white/20 hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               Back to Home
             </Button>
@@ -272,7 +424,7 @@ const Dashboard = () => {
                   </p>
                 </CardContent>
                 <CardFooter>
-                  <Button onClick={() => setLocation("/")} className="w-full">
+                  <Button onClick={() => navigate("/")} className="w-full">
                     Explore Recipes
                   </Button>
                 </CardFooter>
@@ -282,6 +434,11 @@ const Dashboard = () => {
           
           {/* Preferences Tab */}
           <TabsContent value="preferences" className="space-y-6">
+            {loadingPreferences ? (
+              <div className="flex justify-center py-12">
+                <div className="animate-spin h-8 w-8 border-4 border-mint-green border-t-transparent rounded-full"></div>
+              </div>
+            ) : (
             <Card>
               <CardHeader>
                 <CardTitle>Dietary Preferences</CardTitle>
@@ -313,17 +470,19 @@ const Dashboard = () => {
                     <Button 
                       variant="outline" 
                       size="icon" 
+                      disabled={familySize <= 1}
                       className="h-8 w-8 rounded-full"
-                      onClick={() => {}}
+                      onClick={() => handleFamilySizeChange(Math.max(1, familySize - 1))}
                     >
                       -
                     </Button>
-                    <span className="font-medium mx-2">4</span>
+                    <span className="font-medium mx-2">{familySize}</span>
                     <Button 
                       variant="outline" 
                       size="icon" 
+                      disabled={familySize >= 8}
                       className="h-8 w-8 rounded-full"
-                      onClick={() => {}}
+                      onClick={() => handleFamilySizeChange(Math.min(8, familySize + 1))}
                     >
                       +
                     </Button>
@@ -336,17 +495,30 @@ const Dashboard = () => {
                 <div>
                   <h3 className="font-medium mb-3">Regional Preferences</h3>
                   <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" className="justify-start">North Indian</Button>
-                    <Button variant="outline" className="justify-start">South Indian</Button>
-                    <Button variant="outline" className="justify-start">East Indian</Button>
-                    <Button variant="outline" className="justify-start">West Indian</Button>
+                    {Object.keys(selectedRegions).map(region => (
+                      <Button 
+                        key={region}
+                        variant={selectedRegions[region] ? "default" : "outline"} 
+                        className={`justify-start ${selectedRegions[region] ? "bg-mint-green text-white dark:bg-teal-600" : ""}`}
+                        onClick={() => handleRegionToggle(region)}
+                      >
+                        {region}
+                      </Button>
+                    ))}
                   </div>
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button className="w-full">Save Preferences</Button>
+              <CardFooter className="flex justify-between">
+                <Button 
+                  onClick={handleSaveAllPreferences} 
+                  className="w-full"
+                  disabled={isSaving}
+                >
+                  {isSaving ? "Saving..." : "Save Preferences"}
+                </Button>
               </CardFooter>
             </Card>
+            )}
           </TabsContent>
         </Tabs>
       </div>

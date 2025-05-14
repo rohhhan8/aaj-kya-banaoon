@@ -1,6 +1,6 @@
 import { useAuth } from "@/lib/authContext";
 import { motion } from "framer-motion";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useEffect } from "react";
 
 const UserProfile = () => {
   const { user, logout } = useAuth();
@@ -32,12 +33,19 @@ const UserProfile = () => {
         >
           <Avatar className="h-9 w-9 border-2 border-mint-green dark:border-teal-400">
             {user.photoURL ? (
-              <AvatarImage src={user.photoURL} alt={user.displayName || "User"} />
-            ) : (
+              <AvatarImage 
+                src={user.photoURL} 
+                alt={user.displayName || "User"} 
+                onError={(e) => {
+                  // If image fails to load, hide it so the fallback shows
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                }}
+              />
+            ) : null}
               <AvatarFallback className="bg-mint-green/20 text-mint-green dark:bg-teal-700/20 dark:text-teal-400">
                 {getFallbackInitial()}
               </AvatarFallback>
-            )}
           </Avatar>
         </motion.button>
       </DropdownMenuTrigger>
@@ -50,13 +58,13 @@ const UserProfile = () => {
         
         <DropdownMenuSeparator />
         
-        <Link href="/dashboard">
+        <Link to="/dashboard">
           <DropdownMenuItem className="cursor-pointer">
             Dashboard
           </DropdownMenuItem>
         </Link>
         
-        <Link href="/dashboard?tab=favorites">
+        <Link to="/dashboard?tab=favorites">
           <DropdownMenuItem className="cursor-pointer">
             Saved Recipes
           </DropdownMenuItem>

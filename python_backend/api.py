@@ -7,7 +7,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import uvicorn
-from recommendation_engine import recommendation_engine as engine
+import os
+import shutil
+from recommendation_engine import recommendation_engine as default_engine, load_engine_with_csv, MealRecommendationEngine
+from data_loader import get_available_datasets, load_csv_to_mongodb, get_mongodb_dishes
+from database import get_collection, find_one, find_many, insert_one
+
+# Use the default engine with meal_data.py data
+engine = default_engine
+print(f"Using default meal dataset from meal_data.py with {len(engine.df)} entries")
 
 app = FastAPI(title="RasaRoots ML API", 
               description="ML-powered meal recommendation API for RasaRoots",
@@ -43,6 +51,24 @@ class SimilarMealRequest(BaseModel):
     meal_id: str
     family_size: Optional[int] = 4
 
+# Dataset management models
+class DatasetResponse(BaseModel):
+    """Response model for dataset operations"""
+    name: str
+    type: str
+    size: str
+    
+class LoadDatasetRequest(BaseModel):
+    """Request model for loading a dataset"""
+    filename: str
+
+# MongoDB models
+class MongoDishResponse(BaseModel):
+    """Response model for MongoDB dish operations"""
+    id: str
+    name: str
+    description: Optional[str] = None
+    
 # Root endpoint
 @app.get("/")
 async def root():
@@ -53,7 +79,14 @@ async def root():
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy"}
+    try:
+        # Attempt to get a collection to verify DB connection
+        get_collection("dishes") 
+        db_status = "connected (MongoDB)"
+    except Exception as e:
+        print(f"Health check DB connection error: {e}")
+        db_status = "disconnected (MongoDB)"
+    return {"status": "healthy", "database": db_status}
 
 # Meal recommendation endpoint
 @app.post("/recommendations")
@@ -64,8 +97,7 @@ async def get_recommendations(request: MealRecommendationRequest):
             preferences=request.preferences or {},
             time_of_day=request.time_of_day,
             region=request.region,
-            tags=request.tags,
-            n=5
+            tags=request.tags
         )
         
         # Adjust for family size
@@ -84,11 +116,25 @@ async def get_recommendations(request: MealRecommendationRequest):
 async def get_occasion_recommendations(request: OccasionRecommendationRequest):
     """Get recommendations for special occasions"""
     try:
+        # Map time_of_day if provided
+        if request.time_of_day:
+            time_mapping = {
+                "morning": "Morning",
+                "breakfast": "Morning",
+                "afternoon": "Afternoon", 
+                "lunch": "Afternoon",
+                "evening": "Evening",
+                "dinner": "Evening",
+                "night": "Evening"
+            }
+            standardized_time = time_mapping.get(request.time_of_day.lower(), request.time_of_day)
+        else:
+            standardized_time = None
+        
         recommendations = engine.get_recommendations_for_occasion(
             occasion=request.occasion,
-            time_of_day=request.time_of_day,
-            tags=request.tags,
-            n=5
+            time_of_day=standardized_time,
+            tags=request.tags
         )
         
         # Adjust for family size
@@ -108,8 +154,7 @@ async def get_similar_recommendations(request: SimilarMealRequest):
     """Get similar meal recommendations"""
     try:
         recommendations = engine.get_content_based_recommendations(
-            meal_id=request.meal_id,
-            n=5
+            meal_id=request.meal_id
         )
         
         # Adjust for family size
@@ -131,9 +176,26 @@ async def get_time_recommendations(
 ):
     """Get recommendations based on time of day"""
     try:
-        from meal_data import get_meals_by_time
+        # Map common time terms to standardized time periods
+        time_mapping = {
+            "morning": "Morning",
+            "breakfast": "Morning",
+            "afternoon": "Afternoon", 
+            "lunch": "Afternoon",
+            "evening": "Evening",
+            "dinner": "Evening",
+            "night": "Evening"
+        }
         
-        recommendations = get_meals_by_time(time_of_day, limit=5)
+        # Standardize the time_of_day parameter
+        standardized_time = time_mapping.get(time_of_day.lower(), time_of_day)
+        
+        print(f"Getting recommendations for time: {standardized_time}")
+        
+        recommendations = engine.get_personalized_recommendations(
+            preferences={}, 
+            time_of_day=standardized_time
+        )
         
         # Adjust for family size
         if family_size:
@@ -154,9 +216,11 @@ async def get_tag_recommendations(
 ):
     """Get recommendations based on tags"""
     try:
-        from meal_data import get_meals_by_tags
-        
-        recommendations = get_meals_by_tags(tags, limit=5)
+        # Get recommendations using personalized recommendations with tags
+        recommendations = engine.get_personalized_recommendations(
+            preferences={}, 
+            tags=tags
+        )
         
         # Adjust for family size
         if family_size:
@@ -166,6 +230,46 @@ async def get_tag_recommendations(
             ]
         
         return {"recommendations": recommendations}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Dataset management endpoints
+@app.get("/datasets", response_model=List[DatasetResponse])
+async def list_datasets():
+    """List all available datasets"""
+    try:
+        datasets = get_available_datasets()
+        return datasets
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/datasets/load")
+async def load_dataset(request: LoadDatasetRequest):
+    """Load a dataset into the recommendation engine"""
+    try:
+        # Load the dataset into MongoDB
+        inserted_count = load_csv_to_mongodb(request.filename)
+        
+        # Reinitialize the engine with MongoDB data
+        # This would need to be implemented in recommendation_engine.py
+        # engine = load_engine_with_mongodb()
+        
+        return {
+            "message": f"Successfully loaded dataset: {request.filename}",
+            "inserted_count": inserted_count
+        }
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail=f"Dataset not found: {request.filename}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# MongoDB dish endpoints
+@app.get("/mongodb/dishes")
+async def get_dishes():
+    """Get all dishes from MongoDB"""
+    try:
+        dishes = get_mongodb_dishes()
+        return {"dishes": dishes, "count": len(dishes)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

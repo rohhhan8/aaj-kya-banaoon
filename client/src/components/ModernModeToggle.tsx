@@ -66,33 +66,37 @@ const ModernModeToggle = ({
         {/* Main mode toggle */}
         <div className="mb-5">
           <div className="flex justify-center mb-1">
-            <div className="bg-gray-100 dark:bg-slate-700/30 p-1 rounded-full shadow-md inline-flex">
+            <div className="p-2 rounded-full shadow-md flex gap-3">
               <motion.button
-                className={`px-5 py-2.5 rounded-full font-quicksand flex items-center gap-2 transition-all ${
+                className={`px-7 py-2.5 rounded-full font-quicksand flex items-center justify-center gap-3 transition-all duration-300 ease-in-out ${
                   activeMode === 'daily' 
-                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 dark:from-teal-600 dark:to-teal-700 text-white shadow-md' 
-                    : 'bg-transparent text-charcoal/80 dark:text-white/80 hover:bg-gray-200 dark:hover:bg-slate-600/20'
+                    ? 'bg-spice-brown dark:bg-teal-500 text-white font-medium shadow-md' 
+                    : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300'
                 }`}
                 onClick={() => handleModeChange('daily')}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileTap={{ scale: 0.95 }}
+                type="button"
               >
-                <i className={`fas fa-calendar-day ${activeMode === 'daily' ? 'text-white' : 'text-amber-600 dark:text-amber-400'}`}></i>
-                <span className="font-medium">Daily Routine</span>
+                <i className={`fas fa-calendar-day text-lg transition-colors duration-300 ${
+                  activeMode === 'daily' ? 'text-white' : 'text-spice-brown dark:text-teal-400'
+                }`}></i>
+                <span>Daily Routine</span>
               </motion.button>
               
               <motion.button
-                className={`px-5 py-2.5 rounded-full font-quicksand flex items-center gap-2 transition-all ${
+                className={`px-7 py-2.5 rounded-full font-quicksand flex items-center justify-center gap-3 transition-all duration-300 ease-in-out ${
                   activeMode === 'special' 
-                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 dark:from-teal-600 dark:to-teal-700 text-white shadow-md' 
-                    : 'bg-transparent text-charcoal/80 dark:text-white/80 hover:bg-gray-200 dark:hover:bg-slate-600/20'
+                    ? 'bg-spice-brown dark:bg-teal-500 text-white font-medium shadow-md' 
+                    : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300'
                 }`}
                 onClick={() => handleModeChange('special')}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileTap={{ scale: 0.95 }}
+                type="button"
               >
-                <i className={`fas fa-star ${activeMode === 'special' ? 'text-white' : 'text-amber-600 dark:text-amber-400'}`}></i>
-                <span className="font-medium">Special Occasion</span>
+                <i className={`fas fa-star text-lg transition-colors duration-300 ${
+                  activeMode === 'special' ? 'text-white' : 'text-spice-brown dark:text-teal-400'
+                }`}></i>
+                <span>Special Occasion</span>
               </motion.button>
             </div>
           </div>
@@ -101,12 +105,12 @@ const ModernModeToggle = ({
         {/* Toggle options in a uniform grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {/* Time of Day Selection */}
-          <div className="bg-white/50 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
+          <div className="bg-cream/70 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
             <div className="mb-1 text-xs text-charcoal/70 dark:text-white/70 font-medium">Time of Day</div>
             <Select value={selectedTime} onValueChange={handleTimeChange}>
               <SelectTrigger className="w-full border-none bg-transparent shadow-none font-quicksand">
                 <div className="flex items-center gap-2">
-                  <i className="fas fa-sun text-saffron dark:text-marigold"></i>
+                  <i className="fas fa-sun text-spice-brown dark:text-marigold"></i>
                   <SelectValue placeholder="Auto Detect" />
                 </div>
               </SelectTrigger>
@@ -121,7 +125,7 @@ const ModernModeToggle = ({
           </div>
           
           {/* Family Size Selection - Compact version */}
-          <div className="bg-white/50 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
+          <div className="bg-cream/70 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
             <div className="mb-1 text-xs text-charcoal/70 dark:text-white/70 font-medium">Family Size</div>
             <div className="flex items-center justify-between">
               <button 
@@ -132,7 +136,7 @@ const ModernModeToggle = ({
               </button>
               
               <div className="flex items-center gap-2">
-                <i className="fas fa-user-friends text-saffron dark:text-marigold"></i>
+                <i className="fas fa-user-friends text-spice-brown dark:text-marigold"></i>
                 <span className="font-quicksand font-medium text-lg">{familySize}</span>
                 <span className="text-xs text-charcoal/70 dark:text-white/70">{familySize === 1 ? 'person' : 'people'}</span>
               </div>
@@ -147,11 +151,11 @@ const ModernModeToggle = ({
           </div>
           
           {/* Lunch Tiffin Toggle */}
-          <div className="bg-white/50 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
+          <div className="bg-cream/70 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
             <div className="mb-1 text-xs text-charcoal/70 dark:text-white/70 font-medium">Lunch Options</div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <i className="fas fa-utensils text-saffron dark:text-marigold"></i>
+                <i className="fas fa-utensils text-spice-brown dark:text-marigold"></i>
                 <span className="font-quicksand font-medium">Lunch Tiffin</span>
               </div>
               <Switch 
@@ -163,7 +167,7 @@ const ModernModeToggle = ({
           </div>
           
           {/* Veg/Non-Veg Toggle */}
-          <div className="bg-white/50 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
+          <div className="bg-cream/70 dark:bg-slate-700/50 rounded-lg p-3 shadow-sm">
             <div className="mb-1 text-xs text-charcoal/70 dark:text-white/70 font-medium">Diet Preference</div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

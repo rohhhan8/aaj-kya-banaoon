@@ -11,10 +11,11 @@ interface ModernSuggestionCardProps {
   name: string;
   description: string;
   imageUrl: string;
-  tags: DishTag[];
+  tags: DishTag[] | string;
   index: number;
   onSeeMore: () => void;
   onAuthPrompt?: (reason: 'favorite') => void;
+  aiConfidence?: number;
 }
 
 const ModernSuggestionCard = ({ 
@@ -25,10 +26,17 @@ const ModernSuggestionCard = ({
   tags, 
   index, 
   onSeeMore,
-  onAuthPrompt 
+  onAuthPrompt,
+  aiConfidence
 }: ModernSuggestionCardProps) => {
   const { user } = useAuth();
   const [isSaved, setIsSaved] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  
+  // Ensure tags is always an array
+  const tagsArray = typeof tags === 'string' 
+    ? tags.split(',').map(tag => tag.trim()) 
+    : Array.isArray(tags) ? tags : [];
   
   const handleSaveRecipe = () => {
     // If not authenticated, prompt for auth
@@ -63,6 +71,11 @@ const ModernSuggestionCard = ({
     return tagIcons[tag] || "fas fa-tag";
   };
 
+  // Handle image errors and set fallback image
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <motion.div 
       className="h-full"
@@ -73,11 +86,24 @@ const ModernSuggestionCard = ({
     >
       <Card className="overflow-hidden h-full bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 border-none flex flex-col">
         <div className="aspect-video relative overflow-hidden">
-          <img 
-            src={imageUrl} 
-            alt={`${name} dish`} 
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" 
-          />
+          {!imageError ? (
+            <img 
+              src={imageUrl} 
+              alt={`${name} dish`} 
+              className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" 
+              onError={handleImageError}
+              loading="eager"
+            />
+          ) : (
+            <div 
+              className="w-full h-full flex items-center justify-center bg-gradient-to-br from-cream/80 to-spice-brown/20 dark:from-slate-700/70 dark:to-slate-800/20"
+            >
+              <div className="text-center p-4">
+                <i className="fas fa-utensils text-3xl text-spice-brown dark:text-marigold mb-2"></i>
+                <h3 className="font-playfair text-sm text-charcoal dark:text-white">{name}</h3>
+              </div>
+            </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end">
             <div className="p-4 w-full">
               <motion.div 
@@ -86,13 +112,13 @@ const ModernSuggestionCard = ({
                 whileHover={{ opacity: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                {tags.map((tag, i) => (
+                {tagsArray.map((tag, i) => (
                   <Badge 
                     key={`${id}-tag-${i}`} 
                     variant="outline" 
                     className="bg-white/20 text-white backdrop-blur-sm border-none text-xs"
                   >
-                    <i className={`${getTagIcon(tag)} mr-1`}></i> {tag}
+                    <i className={`${getTagIcon(tag as DishTag)} mr-1`}></i> {tag}
                   </Badge>
                 ))}
               </motion.div>
@@ -105,13 +131,33 @@ const ModernSuggestionCard = ({
           <p className="text-sm text-spice-brown dark:text-slate-300 font-nunito line-clamp-3">{description}</p>
         </CardContent>
         
-        <CardFooter className="p-5 pt-0 flex justify-between">
+        <CardFooter className={`p-5 pt-0 flex ${aiConfidence !== undefined ? 'flex-col items-start' : 'justify-between items-center'}`}>
+          {aiConfidence !== undefined && (
+            <div className="w-full mb-3">
+              <div className="flex items-center justify-between text-xs mb-1">
+                <span className="text-charcoal/70 dark:text-white/70 font-medium">AI Confidence</span>
+                <span className="font-semibold text-saffron dark:text-marigold">
+                  {Math.round(aiConfidence * 100)}%
+                </span>
+              </div>
+              <div className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                <motion.div 
+                  className="h-full bg-red-600 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${aiConfidence * 100}%` }}
+                  transition={{ duration: 0.7, ease: "circOut" }}
+                />
+              </div>
+            </div>
+          )}
+
+          <div className={`w-full flex ${aiConfidence !== undefined ? 'justify-between' : 'justify-between'} items-center`}>
           <Button 
             variant="ghost" 
-            className="p-0 hover:bg-transparent text-saffron dark:text-marigold hover:text-deep-saffron dark:hover:text-deep-saffron font-medium flex items-center justify-start"
+              className="p-0 hover:bg-transparent text-saffron dark:text-marigold hover:text-deep-saffron dark:hover:text-deep-saffron font-medium flex items-center justify-start text-sm"
             onClick={onSeeMore}
           >
-            <span>See similar dishes</span>
+              <span>View Analysis</span>
             <i className="fas fa-arrow-right ml-2 text-xs"></i>
           </Button>
           
@@ -123,6 +169,7 @@ const ModernSuggestionCard = ({
           >
             <i className={`${isSaved ? 'fas' : 'far'} fa-heart text-xl ${isSaved ? 'text-rose-500' : 'text-gray-400 hover:text-rose-400'}`}></i>
           </Button>
+          </div>
         </CardFooter>
       </Card>
     </motion.div>

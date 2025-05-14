@@ -42,7 +42,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get dishes for a specific day and time
+  // Get dishes for a specific day and time - MODIFIED TO USE PYTHON BACKEND
   app.get("/api/suggestions/daily", async (req: Request, res: Response) => {
     try {
       // Handle missing parameters with defaults
@@ -53,8 +53,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tagsParam = req.query.tags as string | undefined;
       const tags = tagsParam ? tagsParam.split(',') as DishTag[] : undefined;
       
+      // First try to get data from the Python backend with CSV data
+      try {
+        // Map the timeOfDay to match what our Python backend expects
+        let pythonTimeOfDay = "afternoon";
+        if (timeOfDay === "Morning") pythonTimeOfDay = "morning";
+        if (timeOfDay === "Evening") pythonTimeOfDay = "evening";
+        
+        // Call the Python backend
+        const pythonResponse = await axios.post("http://localhost:5100/recommendations", {
+          time_of_day: pythonTimeOfDay,
+          tags: tags,
+          family_size: 4,
+          preferences: {}
+        });
+        
+        console.log("Using Python backend with CSV data for daily suggestions");
+        
+        // Transform the response to match what the frontend expects
+        const recommendations = pythonResponse.data.recommendations.map((rec: any) => ({
+          id: rec.id || `dish-${rec.name.toLowerCase().replace(/\s+/g, '-')}`,
+          name: rec.name,
+          description: rec.description || "A delicious dish made with authentic Indian ingredients.",
+          imageUrl: rec.imageUrl || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c",
+          tags: Array.isArray(rec.tags) ? rec.tags : (typeof rec.tags === 'string' ? rec.tags.split(',').map((tag: string) => tag.trim()) : []),
+          mealType: rec.meal_type || "lunch"
+        }));
+        
+        return res.json(recommendations);
+      } catch (pythonError) {
+        console.error("Python backend error, falling back to default data:", pythonError);
+        // If Python backend fails, fall back to the original implementation
       const dishes = await storage.getDishesForDayAndTime(day, timeOfDay, tags);
       res.json(dishes);
+      }
     } catch (error) {
       console.error(error);
       if (error instanceof z.ZodError) {
@@ -65,7 +97,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get dishes for a specific occasion
+  // Get dishes for a specific occasion - MODIFIED TO USE PYTHON BACKEND
   app.get("/api/suggestions/occasion/:occasion", async (req: Request, res: Response) => {
     try {
       const occasion = occasionSchema.parse(req.params.occasion);
@@ -74,6 +106,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tagsParam = req.query.tags as string | undefined;
       const tags = tagsParam ? tagsParam.split(',') as DishTag[] : undefined;
       
+      // First try to get data from the Python backend with CSV data
+      try {
+        // Call the Python backend
+        const pythonResponse = await axios.post("http://localhost:5100/recommendations/occasion", {
+          occasion: occasion,
+          tags: tags,
+          family_size: 4
+        });
+        
+        console.log("Using Python backend with CSV data for occasion suggestions");
+        
+        // Transform the response to match what the frontend expects
+        const recommendations = pythonResponse.data.recommendations.map((rec: any) => ({
+          id: rec.id || `dish-${rec.name.toLowerCase().replace(/\s+/g, '-')}`,
+          name: rec.name,
+          description: rec.description || "A delicious dish made with authentic Indian ingredients.",
+          imageUrl: rec.imageUrl || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c",
+          tags: Array.isArray(rec.tags) ? rec.tags : (typeof rec.tags === 'string' ? rec.tags.split(',').map((tag: string) => tag.trim()) : []),
+          mealType: rec.meal_type || "dinner",
+          occasion: occasion
+        }));
+        
+        return res.json(recommendations);
+      } catch (pythonError) {
+        console.error("Python backend error, falling back to default data:", pythonError);
+        // If Python backend fails, fall back to the original implementation
       let dishes = await storage.getDishesForOccasion(occasion);
       
       // Apply tag filtering if provided
@@ -84,6 +142,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json(dishes);
+      }
     } catch (error) {
       console.error(error);
       if (error instanceof z.ZodError) {

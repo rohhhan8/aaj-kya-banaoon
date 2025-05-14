@@ -123,15 +123,15 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext, day, timeO
                 {todayFestival ? (
                   <div className="space-y-4">
                     <div className="flex items-start gap-4">
-                      <div className="bg-deep-saffron/20 dark:bg-deep-saffron/30 p-3 rounded-full">
-                        <i className={`${getFestivalIcon(todayFestival.id)} text-xl text-deep-saffron`}></i>
+                      <div className="bg-spice-brown/20 dark:bg-deep-saffron/30 p-3 rounded-full">
+                        <i className={`${getFestivalIcon(todayFestival.id)} text-xl text-spice-brown dark:text-deep-saffron`}></i>
                       </div>
                       <div>
                         <div className="flex items-center mb-1">
                           <h2 className="text-2xl font-playfair font-bold text-charcoal dark:text-white mr-2">
                             Happy {todayFestival.name}!
                           </h2>
-                          <Badge className="bg-deep-saffron text-white">Today</Badge>
+                          <Badge className="bg-spice-brown text-white dark:bg-deep-saffron dark:text-white">Today</Badge>
                         </div>
                         <p className="text-spice-brown dark:text-slate-300 font-nunito mb-3">
                           {todayFestival.description}
@@ -140,7 +140,7 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext, day, timeO
                           <h3 className="text-sm font-medium text-charcoal dark:text-white mb-2">Traditional dishes:</h3>
                           <div className="flex flex-wrap gap-1">
                             {todayFestival.dishes.slice(0, 5).map((dish, i) => (
-                              <Badge key={i} variant="outline" className="border-saffron/30 text-saffron dark:border-marigold/30 dark:text-marigold">
+                              <Badge key={i} variant="outline" className="border-spice-brown/40 text-spice-brown dark:border-marigold/30 dark:text-marigold">
                                 {dish}
                               </Badge>
                             ))}
@@ -152,8 +152,8 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext, day, timeO
                 ) : upcomingFestival ? (
                   <div className="space-y-4">
                     <div className="flex items-start gap-4">
-                      <div className="bg-saffron/20 dark:bg-marigold/20 p-3 rounded-full">
-                        <i className="fas fa-utensils text-xl text-saffron dark:text-marigold"></i>
+                      <div className="bg-spice-brown/20 dark:bg-marigold/20 p-3 rounded-full">
+                        <i className="fas fa-utensils text-xl text-spice-brown dark:text-marigold"></i>
                       </div>
                       <div className="flex-1">
                         <h2 className="text-2xl font-playfair font-bold text-charcoal dark:text-white mb-2">
@@ -164,9 +164,9 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext, day, timeO
                         </p>
                         
                         {/* Upcoming festival notice */}
-                        <div className="mt-4 p-3 bg-cream/30 dark:bg-slate-700/30 rounded-lg">
+                        <div className="mt-4 p-3 bg-cream/50 dark:bg-slate-700/30 rounded-lg">
                           <div className="flex items-center">
-                            <i className={`${getFestivalIcon(upcomingFestival.id)} text-lg text-saffron dark:text-marigold mr-2`}></i>
+                            <i className={`${getFestivalIcon(upcomingFestival.id)} text-lg text-spice-brown dark:text-marigold mr-2`}></i>
                             <p className="text-sm font-medium text-charcoal dark:text-white">
                               <span className="font-semibold">{upcomingFestival.name}</span> is coming up soon!
                             </p>
@@ -177,8 +177,8 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext, day, timeO
                   </div>
                 ) : (
                   <div className="flex items-start gap-4">
-                    <div className="bg-saffron/20 dark:bg-marigold/20 p-3 rounded-full">
-                      <i className="fas fa-utensils text-xl text-saffron dark:text-marigold"></i>
+                    <div className="bg-spice-brown/20 dark:bg-marigold/20 p-3 rounded-full">
+                      <i className="fas fa-utensils text-xl text-spice-brown dark:text-marigold"></i>
                     </div>
                     <div>
                       <h2 className="text-2xl font-playfair font-bold text-charcoal dark:text-white mb-2">{dailyContext.title}</h2>
@@ -222,24 +222,47 @@ const ModernContextualHeader = ({ mode, dailyContext, specialContext, day, timeO
                     >
                       <Button
                         variant="outline"
-                        className={`w-full h-24 flex flex-col items-center justify-center gap-2 
+                        className={`w-full h-24 flex flex-col items-center justify-center gap-2 relative
                           ${occasion.isSpecial 
-                            ? 'bg-gradient-to-br from-white/70 to-saffron/20 dark:from-slate-700/70 dark:to-marigold/20' 
+                            ? 'bg-gradient-to-br from-white/80 to-spice-brown/20 dark:from-slate-700/70 dark:to-marigold/20' 
                             : 'bg-white/50 dark:bg-slate-700/50'} 
-                          border-none hover:bg-saffron/20 dark:hover:bg-marigold/20 shadow-sm rounded-lg`}
+                          border-none hover:bg-spice-brown/20 dark:hover:bg-marigold/20 shadow-sm rounded-lg
+                          overflow-hidden`}
                         onClick={() => specialContext.onOccasionSelect(
                           'id' in occasion && 'festival' in occasion ? occasion.id : occasion.name
                         )}
                       >
-                        {/* Add a special indicator for festivals */}
+                        {/* Background image for festivals */}
                         {occasion.isSpecial && (
-                          <div className="absolute top-1 right-1">
-                            <div className="w-2 h-2 rounded-full bg-deep-saffron dark:bg-marigold animate-pulse"></div>
+                          <div className="absolute inset-0 w-full h-full z-0 opacity-30">
+                            <img 
+                              src={occasion.festival.imageUrl} 
+                              alt={occasion.name}
+                              className="w-full h-full object-cover"
+                              loading="eager"
+                              onError={(e) => {
+                                // Fallback if image fails to load
+                                (e.target as HTMLImageElement).style.display = 'none';
+                              }}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent dark:from-slate-800/80"></div>
                           </div>
                         )}
                         
-                        <i className={`${occasion.icon} text-xl text-saffron dark:text-marigold`}></i>
-                        <span className="font-quicksand text-sm text-center text-charcoal dark:text-white">{occasion.name}</span>
+                        {/* Content */}
+                        <div className="relative z-10 flex flex-col items-center">
+                          {/* Add a special indicator for festivals */}
+                          {occasion.isSpecial && (
+                            <div className="absolute -top-8 -right-8 w-16 h-16">
+                              <div className="absolute top-9 left-9 w-2 h-2 rounded-full bg-spice-brown dark:bg-marigold animate-pulse"></div>
+                            </div>
+                          )}
+                          
+                          <i className={`${occasion.icon} text-xl text-spice-brown dark:text-marigold`}></i>
+                          <span className="font-quicksand text-sm text-center text-charcoal dark:text-white">
+                            {occasion.name}
+                          </span>
+                        </div>
                       </Button>
                     </motion.div>
                   ))}

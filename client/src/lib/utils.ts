@@ -5,17 +5,26 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export type DishTag = "Healthy" | "Light" | "Spicy" | "Quick" | "Festive" | "Protein" | "Probiotic" | "One-pot" | "Balanced";
+export type DishTag = 
+  | "Healthy" 
+  | "Light" 
+  | "Spicy" 
+  | "Quick" 
+  | "Festive" 
+  | "Protein" 
+  | "Probiotic" 
+  | "One-pot"
+  | "Balanced";
 
-export type DishSuggestion = {
+export interface DishSuggestion {
   id: string;
   name: string;
   description: string;
   imageUrl: string;
   tags: DishTag[];
   mealType: "breakfast" | "lunch" | "dinner" | "snack";
-  occasion?: string;
-};
+  confidence?: number; // ML confidence score (0-1)
+}
 
 export const mealTimeByHour = (hour: number): "Morning" | "Afternoon" | "Evening" => {
   if (hour >= 5 && hour < 12) {
